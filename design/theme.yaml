@@ -25,8 +25,14 @@ fonts:
   body: Amiri              # خط المتن
   body_bold: Amiri-Bold
   body_italic: Amiri-Italic
-  heading: NotoSansArabic-Bold   # خط العناوين (تغطية كاملة للأشكال السياقية)
-  heading_bold: NotoSansArabic-Bold
+  # خط العناوين: Amiri-Bold وليس NotoSansArabic-Bold.
+  # السبب (مُتحقَّق منه بفحص cmap): خطوط Noto العربية لا تحتوي الترقيم اللاتيني
+  # (— … · • –) إطلاقًا، وعناوين الفصول المعتمدة تحوي الشرطة الطويلة «—»،
+  # فكانت تظهر فارغة (NUL) في الـPDF. وAmiri يجمع بين تغطية كاملة للأشكال السياقية
+  # (611 + 140) وبين الترقيم اللاتيني. أما Almarai/Tajawal فترقيمها موجود لكن
+  # أشكالها السياقية ناقصة (59/91) فلا تصلح.
+  heading: Amiri-Bold
+  heading_bold: Amiri-Bold
   mono: DejaVuSansMono     # للأكواد والنصوص اللاتينية
   latin: NotoSans          # المصاحب اللاتيني داخل النص العربي
   # بدائل متاحة ومُختبرة: Amiri / Amiri-Bold / NotoNaskhArabic / NotoNaskhArabic-Bold

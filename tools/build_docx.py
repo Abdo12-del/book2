@@ -656,6 +656,17 @@ def build_docx(blocks, meta: dict, out_path: str, theme_path: str | None = None,
         p = doc.add_paragraph()
         make_rtl(p, rtl)
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        # لوحة الغلاف (اختيارية) في الوورد أيضًا
+        _cv = meta.get("cover_image", "")
+        if _cv:
+            _cvp = _cv if os.path.isabs(_cv) else os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "book", _cv)
+            if os.path.exists(_cvp):
+                p = doc.add_paragraph()
+                make_rtl(p, rtl)
+                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                r = p.add_run()
+                r.add_picture(_cvp, width=Cm(5.5))
         para_spacing(p, 50, 6)
         r = p.add_run()
         style_run(r, fonts["heading"], 14, rtl, bold=True, color=theme["colors"]["accent"])

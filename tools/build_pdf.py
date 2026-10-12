@@ -295,7 +295,11 @@ class OrnamentalBreak(Flowable):
 
 
 class TOCFlowable(Flowable):
-    """فهرس المحتويات (يُبنى من الإدخالات المجموعة في التمريرة السابقة)."""
+    """فهرس المحتويات (يُبنى من الإدخالات المجموعة في التمريرة السابقة).
+
+    يدعم التقسيم على أكثر من صفحة عبر ``split``: الفهرس الطويل (باب + فصول + عناصر)
+    يتجاوز ارتفاع الصفحة الواحدة حتمًا، وبدون ``split`` يرفضه ReportLab بخطأ LayoutError.
+    """
 
     def __init__(self, entries: list[tuple[int, str, int]], theme, fonts, width: float):
         super().__init__()
@@ -304,50 +308,65 @@ class TOCFlowable(Flowable):
         self._wrapped: list[tuple] = []
 
     def wrap(self, availWidth, availHeight):
-        s = self.theme["sizes"]
-        y = 0
         self._wrapped = []
+        y = 0.0
         for level, text, page in self.entries:
-            st = f"toc0" if level == 1 else "toc1"
+            st = "toc0" if level == 1 else "toc1"
             p = Paragraph(A.shape(text), self.theme["_styles"][st])
-            w, h = p.wrap(self.width - 46, availHeight)
+            p.wrap(self.width - 46, availHeight)
+            h = p.height
             y += h + (4 if level == 1 else 0)
-            self._wrapped.append((level, p, page, h))
+            self._wrapped.append((level, text, p, page, h))
         self.height = y
         return self.width, self.height
+
+    def split(self, availWidth, availHeight):
+        """يقسم الفهرس عند آخر مدخل يتسع له الإطار الحالي."""
+        if not self._wrapped:
+            self.wrap(availWidth, availHeight)
+        if not self._wrapped or self.height <= availHeight:
+            return []
+        used, k = 0.0, 0
+        for level, text, p, page, h in self._wrapped:
+            step = h + (4 if level == 1 else 0)
+            # لا نُدخل مدخلاً لا يتسع: إن لم يتسع ولا واحد نعيد [] فيُنهي ReportLab
+            # الإطار الحالي وينتقل إلى صفحة جديدة (بدل «Splitting error»).
+            if used + step > availHeight:
+                break
+            used += step
+            k += 1
+        if not k or k >= len(self._wrapped):
+            return []
+        return [TOCFlowable(self.entries[:k], self.theme, self.fonts, self.width),
+                TOCFlowable(self.entries[k:], self.theme, self.fonts, self.width)]
 
     def draw(self):
         c = self.canv
         fm = A.format_number
         style = self.theme["running"]["page_number_style"]
         accent = colors.Color(*hex_to_rgb(self.theme["colors"]["accent"]))
+        text_col = colors.Color(*hex_to_rgb(self.theme["colors"]["text"]))
+        frame_w = self.width - 46          # إطار النص يبدأ من x=46
         y = self.height
-        for level, p, page, h in self._wrapped:
+        for level, text, p, page, h in self._wrapped:
             y -= h
             # النص على اليمين ورقم الصفحة على اليسار (اتجاه عربي)
             p.drawOn(c, 46, y)
+            text_w = pdfmetrics.stringWidth(A.shape(text), p.style.fontName, p.style.fontSize)
             if self.theme["toc"]["dotted_leader"]:
-                text_w = pdfmetrics.stringWidth(A.shape(self._text_of(p)), p.style.fontName,
-                                                p.style.fontSize)
-                x0, x1 = 40, 46 + min(text_w, self.width - 60) + 6
-                if level == 1:
+                # النص مُحاذاة لليمين داخل إطاره: يمتد من (46+frame_w-text_w) إلى (46+frame_w)
+                x_right = 46 + frame_w - text_w - 6
+                x_left = 26
+                if x_right > x_left:
                     c.setStrokeColor(accent)
                     c.setLineWidth(0.4)
                     c.setDash(0.5, 2.2)
-                    if x1 < x0:
-                        c.line(x1, y + h * 0.35, x0, y + h * 0.35)
+                    c.line(x_left, y + h * 0.35, x_right, y + h * 0.35)
                     c.setDash()
-            c.setFillColor(colors.Color(*hex_to_rgb(self.theme["colors"]["text"])))
+            c.setFillColor(text_col)
             c.setFont(self.fonts["body"], self.theme["sizes"]["toc_pt"] * 0.9)
-            if level == 1:
-                c.drawString(6, y + h * 0.22, fm(page, style))
-            else:
-                c.drawString(6, y + h * 0.22, fm(page, style))
+            c.drawString(6, y + h * 0.22, fm(page, style))
             y -= 4 if level == 1 else 0
-
-    @staticmethod
-    def _text_of(p) -> str:
-        return getattr(p, "_book_text", "")
 
 
 # --------------------------------------------------------------------------- نموذج المستند
@@ -717,21 +736,40 @@ def front_matter_story(meta, styles, theme, fonts, text_width) -> list[Flowable]
 
 
 def cover_story(meta, styles, theme, fonts, text_width) -> list[Flowable]:
-    out: list[Flowable] = [Spacer(1, 78)]
+    out: list[Flowable] = [Spacer(1, 26)]
     if meta.get("series"):
         out.append(Paragraph(A.shape(meta["series"]), styles["cover_subtitle"]))
-        out.append(Spacer(1, 8))
+        out.append(Spacer(1, 6))
     out.append(Paragraph(A.shape(meta.get("title", "عنوان الكتاب")), styles["cover_title"]))
-    out.append(Spacer(1, 14))
-    out.append(Rule(text_width * 0.22, 1.2, colors.Color(*hex_to_rgb(theme["colors"]["accent"])), 6))
+    out.append(Spacer(1, 10))
+    rule = Rule(text_width * 0.24, 1.2, colors.Color(*hex_to_rgb(theme["colors"]["accent"])), 6)
+    rule.hAlign = "CENTER"
+    out.append(rule)
     if meta.get("subtitle"):
-        out.append(Spacer(1, 10))
+        out.append(Spacer(1, 8))
         out.append(Paragraph(A.shape(meta["subtitle"]), styles["cover_subtitle"]))
-    out.append(Spacer(1, 40))
+
+    # لوحة الغلاف (اختيارية): صورة توليدية بلا نص، تُقاس بنسبة أبعادها الفعلية
+    cv = meta.get("cover_image", "")
+    if cv:
+        cvp = cv if os.path.isabs(cv) else os.path.join(os.path.dirname(os.path.dirname(__file__)), "book", cv)
+        if os.path.exists(cvp):
+            try:
+                from PIL import Image as PILImage
+                with PILImage.open(cvp) as im:
+                    iw, ih = im.size
+            except Exception:  # noqa: BLE001
+                iw, ih = 1000, 1500
+            w = text_width * 0.42
+            h = w * ih / iw
+            img = Image(cvp, width=w, height=h)
+            img.hAlign = "CENTER"
+            out += [Spacer(1, 12), img]
+    out.append(Spacer(1, 16))
     out.append(Paragraph(A.shape(meta.get("author", "")), styles["cover_author"]))
     if meta.get("publisher") or meta.get("year"):
-        out.append(Spacer(1, 30))
-        line = "  •  ".join(x for x in [meta.get("publisher", ""), str(meta.get("year", ""))] if x)
+        out.append(Spacer(1, 22))
+        line = "  \u2022  ".join(x for x in [meta.get("publisher", ""), str(meta.get("year", ""))] if x)
         out.append(Paragraph(A.shape(line), styles["cover_subtitle"]))
     return out
 

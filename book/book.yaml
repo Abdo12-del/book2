@@ -3,14 +3,14 @@
 #  لا تُغيّر هذا الملف إلا بالاتفاق — هو المرجع الوحيد للترتيب.
 # ============================================================
 
-title: "عنوان الكتاب"
-subtitle: "العنوان الفرعي أو وصف موجود"
-author: "اسم المؤلف"
-publisher: "دار النشر"
+title: "دورة المتحدث الصغير"
+subtitle: "من التأسيس إلى التأثير"
+author: "أكاديمية NG"
+publisher: "NG Academy"
 year: 2026
-series: ""
+series: "دليل مدرّب NG Academy"
 edition: "الطبعة الأولى"
-description: ""
+description: "دليل المدرب لتعليم مهارات التحدث للأطفال من خلال مستويين متكاملين"
 
 # الكلمة المستخدمة في افتتاحية كل فصل: الفصل / الوحدة / الباب
 chapter_label: "الفصل"
@@ -19,6 +19,19 @@ chapter_label: "الفصل"
 dedication: ""
 epigraph: ""
 
+# لوحة الغلاف (اختياري): صورة توليدية بلا نص، تُدرج في غلاف الـPDF
+cover_image: "images/cover-art.png"
+
 # ملفات المحتوى بالترتيب (مسارات نسبية من مجلد book/)
 spine:
-  - sample/00-numuwdh.md
+  - 00-fihris.md
+  - 01-muqaddima.md
+  - part1/00-bab.md
+  - part1/01-thiqa.md
+  - part1/02-tabeer.md
+  - part1/03-raseed.md
+  - part1/04-tanzeem.md
+  - part1/05-qiraa.md
+  - part1/06-sawt.md
+  - part1/07-jasad.md
+  - part1/08-ibdaa.md

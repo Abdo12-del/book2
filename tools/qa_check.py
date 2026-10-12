@@ -366,6 +366,33 @@ def check_docx(path: str, rpt: Report, expect_headings: list[str] | None = None)
             rpt.good(f"كل العناوين ({len(expect_headings)}) موجودة كعناوين Word حقيقية")
 
 
+def read_source(path: str) -> str:
+    """يقرأ مصدر المخطوطة: ملف مفرد، أو book.yaml، أو مجلد يحتوي book.yaml.
+
+    الكتاب الحقيقي موزّع على عدة ملفات مرتّبة في `spine`، فلا يكفي قراءة ملف واحد.
+    """
+    if os.path.isdir(path):
+        cand = os.path.join(path, "book.yaml")
+        if not os.path.exists(cand):
+            raise SystemExit(f"--source مجلد بلا book.yaml: {path}")
+        path = cand
+    if path.endswith((".yaml", ".yml")):
+        import yaml
+        base = os.path.dirname(os.path.abspath(path))
+        with open(path, encoding="utf-8") as f:
+            meta = yaml.safe_load(f) or {}
+        parts = []
+        for rel in meta.get("spine", []) or []:
+            p = os.path.join(base, rel)
+            if os.path.exists(p):
+                parts.append(open(p, encoding="utf-8").read())
+            else:
+                print(f"  ! ملف مفقود من الـspine: {p}")
+        return "\n".join(parts)
+    with open(path, encoding="utf-8") as f:
+        return f.read()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="فحص جودة مخرجات الكتاب")
     ap.add_argument("files", nargs="+")
@@ -377,7 +404,7 @@ def main() -> int:
 
     src = None
     if args.source and os.path.exists(args.source):
-        src = open(args.source, encoding="utf-8").read()
+        src = read_source(args.source)
     heads = None
     if args.headings and os.path.exists(args.headings):
         heads = [l.strip() for l in open(args.headings, encoding="utf-8") if l.strip()]
