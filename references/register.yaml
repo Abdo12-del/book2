@@ -7,15 +7,17 @@ sources:
   title_ar: الطفل كامل الدماغ
   author: Daniel J. Siegel & Tina Payne Bryson
   translator: —
-  publisher: Delacorte Press (غلاف صلب ٢٠١١) / Bantam (٢٠١٢)
+  publisher: 'Robinson (Little, Brown Book Group / Hachette UK)؛ الأصل الأمريكي: Delacorte Press ٢٠١١'
   year: '2011'
-  edition: الأولى
-  isbn: 978-0553386691
+  edition: النسخة البريطانية (Robinson) ٢٠١٢ — وهذه هي النسخة المرفوعة فعليًا
+  isbn: 978-1-78033-837-8
   language: الإنجليزية
   url: https://openlibrary.org/search.json?q=title%3A%22whole-brain+child%22
-  access: metadata-only
-  access_note: تحققت من البيانات الببليوغرافية فعليًا عبر Open Library في هذه الجلسة. نص الكتاب نفسه لم
-    يُفتح؛ ما يلي من الأفكار مبني على معرفتي العامة بمحتواه ويجب التحقق منه صفحةً بصفحة عند تأليف الفصل.
+  access: full
+  access_note: 'فُتحت صفحة الحقوق وفهرس المحتويات من ملف PDF نفسه في هذه الجلسة: أول نشر أمريكي Delacorte
+    Press ٢٠١١، وأول نشر بريطاني Robinson ٢٠١٢، ISBN 978-1-78033-837-8. تنبيه: النسخة مسحوبة ضوئيًا (رقمنها
+    Internet Archive سنة ٢٠٢٤) ونصّها المُستخرَج فيه أخطاء تعرّف ضوئي، فالاستشهاد بالصفحة ممكن أما النقل
+    الحرفي فيحتاج مراجعة الصورة.'
   reliability: مهني موثوق
   summary: كتاب توجيهي للآباء والمربّين يبسّط مفاهيم علوم الأعصاب التربوية إلى اثنتي عشرة إستراتيجية عملية
     للتعامل مع انفعالات الطفل وتنظيمها. مؤلفاه طبيب نفسي للأطفال ومعالجة تربوية.
@@ -52,22 +54,33 @@ sources:
   open_questions:
   - هل تُستخدم أمثلة الكتاب (آباء/أطفال في البيت) مباشرة أم تُعاد صياغتها لسياق حلقة تدريبية؟
   - مدى إمكانية نقل «الذاكرة الضمنية» إلى شرح مبسّط للمدرب دون تبسيط مُخلّ.
+  drive_file_id: 1Y3yJJlCGrJBlJk2OrR_2EtRZNpnC0mls
+  key_ideas_verified:
+  - الفصل ١ «Parenting with the Brain in Mind» ص ٣ — من فهرس المحتويات المُستخرَج.
+  - الفصل ٢ «Two Brains Are Better Than One» ص ١٤، ويضمّ الإستراتيجية ١ «Connect and Redirect» والإستراتيجية
+    ٢ «Name It to Tame It» — وهو ما يؤكد فكرتين سجّلتُهما سابقًا من الذاكرة.
+  - الفصل ٣ «Building the Staircase of the Mind» ص ٣٧ (الدماغ العلوي/السفلي) — يؤكد فكرة «السلم العقلي».
+  - الفصل ٤ «Kill the Butterflies!» ص ٦٦ (الذاكرة).
 - id: S002
   origin: user
   part: 1
   type: كتاب
-  title: 'Mindset: The New Psychology of Success'
+  title: Mindset — Changing the Way You Think to Fulfil Your Potential (Updated Edition)
   title_ar: 'العقلية: علم النفس الجديد للنجاح'
   author: Carol S. Dweck
   translator: —
-  publisher: Random House
+  publisher: 'Robinson (Constable & Robinson / Little, Brown Book Group)؛ الأصل الأمريكي: Random House
+    ٢٠٠٦'
   year: '2006'
-  edition: الأولى
-  isbn: 978-1400062751
+  edition: الطبعة المنقّحة البريطانية ٢٠١٧ — وهذه هي النسخة المرفوعة فعليًا
+  isbn: 978-1-47213-996-2
   language: الإنجليزية
   url: https://openlibrary.org/search.json?q=title%3A%22mindset%22+author%3A%22dweck%22
-  access: metadata-only
-  access_note: تحققت من البيانات الببليوغرافية عبر Open Library. نص الكتاب لم يُفتح في هذه الجلسة.
+  access: full
+  access_note: 'فُتحت صفحة الحقوق وفهرس المحتويات من ملف PDF نفسه: أول نشر أمريكي Random House ٢٠٠٦، غلاف
+    صلب Ballantine ٢٠٠٧، أول نشر بريطاني Robinson ٢٠١٢، والطبعة المنقّحة ٢٠١٧ بحقوق © Carol S. Dweck 2017،
+    ISBN 978-1-47213-996-2. العنوان المدرَج في رسالتك («The New Psychology of Success») هو عنوان الطبعة
+    الأمريكية، أما نسختك فبريطانية منقّحة بعنوان فرعي مختلف.'
   reliability: مهني موثوق
   summary: الكتاب الذي عرّف الجمهور العام بنظرية العقلية (الثابتة مقابل النامية). الأصل البحثي منشور في
     دوريات محكّمة، أمّا الكتاب فعرض تطبيقي موجّه لغير المختصين.
@@ -99,6 +112,9 @@ sources:
     لا الموهبة».'
   open_questions:
   - هل توجد ترجمة عربية معتمدة نُشير إليها أم نكتفي بالعنوان الأصلي؟
+  drive_file_id: 1TjbGVR0P1aM3SeIvNCX8xrVanraXLwu3
+  key_ideas_verified:
+  - الفصل ١ «The Mindsets» ويتضمن فقرة «So, What's New?» — من فهرس المحتويات المُستخرَج.
 - id: S003
   origin: user
   part: 1
@@ -116,7 +132,7 @@ sources:
   access: metadata-only
   access_note: 'تحققت من البيانات الببليوغرافية عبر Open Library. نص الكتاب لم يُفتح في هذه الجلسة. رقم
     الإسبان (978-0544634497) مأخوذ من سجل Open Library نفسه: Open Library: سجل TED Talks (HMH/Headline
-    2016).'
+    2016). الملف موجود في مجلد «كتب» (١١٫٧ م.ب). القراءة معلّقة: تعطّل موصل Drive.'
   reliability: مهني موثوق
   summary: دليل عملي كتبه مدير مؤتمر TED، يلخّص خبرة أكثر من ألف عرض في قواعد التحضير والبناء والأداء.
     خبرة مؤسسية متراكمة، لا بحثًا محكّمًا.
@@ -156,6 +172,7 @@ sources:
     + تفاصيل/أمثلة ← خاتمة). ويوفر معيارًا لحصر التشتت: «هل هذه الجملة تخدم الفكرة الرئيسية؟»'
   open_questions:
   - كيف تُبسَّط قاعدة «فكرة واحدة» لطفل في التاسعة دون أن تصبح قيدًا على خياله في الفصل ٨؟
+  drive_file_id: 1AKKZTcASP376omo0bYDYIZLwVnhQz7GR
 - id: S004
   origin: user
   part: 1
@@ -170,9 +187,11 @@ sources:
   isbn: —
   language: الإنجليزية
   url: https://openlibrary.org/search.json?q=title%3A%22language+development%22+author%3A%22owens%22
-  access: metadata-only
-  access_note: 'تحققت من سنوات النشر والدور عبر Open Library. لم أفتح نص الكتاب. تنبيه: الطبعة الأولى
-    (١٩٨٤) قديمة؛ عند التأليف يُستشهد بالطبعة الأحدث المتاحة.'
+  access: none
+  access_note: '⚠️ **لم يُرفع هذا الكتاب.** المرفوع في مجلد «كتب» كتاب مختلف تمامًا: «Introduction to
+    Language Development» للمؤلفة Shelia M. Kennison (وليس «Language Development: An Introduction» لـ
+    Robert E. Owens Jr.). مؤلف مختلف ودار مختلفة ومعالجة مختلفة. سُجّل الكتاب المرفوع برمز S031. **يحتاج
+    قرارك:** أيهما يُعتمد مرجعًا للفصل الثاني؟'
   reliability: علمي محكّم
   summary: 'كتاب جامعي مرجعي في نمو اللغة عند الطفل: مراحل النمو الصوتي والصرفي والنحوي والدلالي والتداولي،
     والعوامل المؤثرة فيه.'
@@ -206,6 +225,7 @@ sources:
   open_questions:
   - أي طبعة ستعتمدون؟ (أنصح بالأحدث ٢٠١٥ إن توفّرت)
   - هل نحتاج مصدرًا عربيًا موازيًا في النمو اللغوي لطفولة المدرسة؟
+  discrepancy: الكتاب المُدرَج في القائمة لم يُرفع؛ رُفع كتاب آخر بمؤلف مختلف
 - id: S005
   origin: user
   part: 1
@@ -222,7 +242,8 @@ sources:
   url: https://openlibrary.org/search.json?q=title%3A%22connecting+through+talk%22
   access: metadata-only
   access_note: 'تحققت من البيانات الببليوغرافية عبر Open Library. لم أفتح نص الكتاب. رقم الإسبان (978-1681252315)
-    مأخوذ من سجل Open Library نفسه: Open Library: سجل Connecting Through Talk (Brookes 2019).'
+    مأخوذ من سجل Open Library نفسه: Open Library: سجل Connecting Through Talk (Brookes 2019). الملف موجود
+    في مجلد «كتب» (١٥٫٤ م.ب، مرفوع مرتين بالنسخة نفسها). القراءة معلّقة: تعطّل موصل Drive أثناء المعالجة.'
   reliability: مهني موثوق
   summary: كتاب موجّه للمربّين وأولياء الأمور عن كيفية بناء بيئة حديث غنية تنمّي لغة الطفل في سنوات ما
     قبل المدرسة والسنوات الأولى.
@@ -253,6 +274,8 @@ sources:
     بل سؤال مفتوح يفتح التوسيع — وهو ما يطابق توجيهك «الكلمة ← الجملة ← السبب/المثال».'
   open_questions:
   - هل يمتد الكتاب إلى سن المدرسة الابتدائية أم يقف عند الطفولة المبكرة؟ (يؤثر على الفصل الثاني)
+  drive_file_id: 1CJyzcPeZgQ0d43sd00o_7swNrIPmMea8
+  duplicate_file_id: 1vZUf2wRFwVxqs-xIZIkj7prGtGA-VWkQ
 - id: S006
   origin: user
   part: 1
@@ -269,7 +292,8 @@ sources:
   url: https://openlibrary.org/search.json?q=title%3A%22developing+language+and+literacy%22
   access: metadata-only
   access_note: 'تحققت من سنتي النشر والدار عبر Open Library. لم أفتح نص الكتاب. رقم الإسبان (978-1412934237)
-    مأخوذ من سجل Open Library نفسه: Open Library: سجل الطبعة الثالثة 2007 (Paul Chapman).'
+    مأخوذ من سجل Open Library نفسه: Open Library: سجل الطبعة الثالثة 2007 (Paul Chapman). الملف موجود
+    في مجلد «كتب» (٢٫٠ م.ب). القراءة معلّقة: تعطّل موصل Drive.'
   reliability: مهني موثوق
   summary: كتاب تربوي بريطاني في تنمية اللغة والوعي بالكلمة المكتوبة في سنوات الطفولة المبكرة، يربط بين
     اللعب واللغة والقصة والكتابة الأولى.
@@ -298,6 +322,7 @@ sources:
   value_for_trainer: 'يعطي مخزون أمثلة للفصل الثاني: من أين يأتي الطفل بموضوع يتحدث عنه؟ من يومه. وهذا
     يحل مشكلة «لا أعرف ماذا أقول» التي يواجهها المدرب في الحصة.'
   open_questions: []
+  drive_file_id: 1pqTf0ap8VgLs2B5WdUQWukU10rnBFdHH
 - id: S007
   origin: user
   part: 1
@@ -313,7 +338,8 @@ sources:
   language: الإنجليزية
   url: https://openlibrary.org/search.json?q=title%3A%22bringing+words+to+life%22
   access: metadata-only
-  access_note: تحققت من البيانات الببليوغرافية عبر Open Library. لم أفتح نص الكتاب.
+  access_note: 'تحققت من البيانات الببليوغرافية عبر Open Library. لم أفتح نص الكتاب. الملف موجود في مجلد
+    «كتب» (١٢٫٣ م.ب). القراءة معلّقة: تعطّل موصل Drive.'
   reliability: علمي محكّم
   summary: الكتاب المرجعي في تدريس المفردات مبنيًا على برنامج بحثي مطوّل للمؤلفات؛ يميّز بين مستويات الكلمات
     ويقترح إجراءات تدريس مجرّبة.
@@ -348,6 +374,7 @@ sources:
     بل يُشترط أن تُستعمل الكلمة في حديث فعلي مرتين على الأقل في سياقين مختلفين قبل اعتمادها مكتسبة.'
   open_questions:
   - كيف نختار الكلمات العربية المكافئة؟ تصنيف Tier 2 مبني على الإنجليزية ويحتاج نظيرًا عربيًا.
+  drive_file_id: 1ANSVSiEAmngPHbb1VZoS5LmDrqorr9be
 - id: S008
   origin: user
   part: 1
@@ -413,13 +440,14 @@ sources:
   translator: —
   publisher: Pearson
   year: طبعات متعددة
-  edition: —
+  edition: Global Edition، الطبعة السابعة (بحسب اسم الملف)
   isbn: 978-0133996333
   language: الإنجليزية
   url: https://openlibrary.org/search.json?q=title%3A%22words+their+way%22
-  access: metadata-only
-  access_note: 'تحققت من المؤلفين والدار والطبعات عبر Open Library. لم أفتح نص الكتاب. رقم الإسبان (978-0133996333)
-    مأخوذ من سجل Open Library نفسه: Open Library: سجل Words Their Way (Pearson 2012).'
+  access: none
+  access_note: 'الملف موجود في مجلد «كتب» لكنه **١٠٥٫٦ م.ب، يتجاوز حدّ الاستخراج (٢٥ م.ب)** فلا أستطيع
+    قراءة نصّه بأدواتي الحالية. يبقى `metadata-only` من حيث البيانات و`none` من حيث النص. ملاحظة: النسخة
+    المرفوعة «Global Edition» السابعة، وقد تختلف ترقيم صفحاتها عن الطبعة الأمريكية.'
   reliability: مهني موثوق
   summary: منهج تدريسي مدرسي لتدريس بنية الكلمة (الوعي الصوتي، الأنماط الإملائية، المفردات) بنهج الاكتشاف
     الموجّه وفرز الكلمات.
@@ -443,6 +471,7 @@ sources:
   - هل نُبقيه في المراجع أم نحذفه من الباب الأول؟ المنهج موجه للقراءة والإملاء، والتعبير الشفوي ليس هدفه.
     أنت أشرت إلى أنه «أكثر توجّهًا للقراءة والكتابة لا للتعبير الشفوي» — أقترح إبقاءه كمرجع إسنادي مع
     التنويه، ولك القرار.
+  drive_file_id: 1KMCazGIPKspNNfSWXN7kyK6U2O7uQUye
 - id: S010
   origin: user
   part: 1
@@ -1461,3 +1490,89 @@ sources:
   - 'التحقق من كتاب: محمد علي السويكري، التعبير الشفوي، دار الكنيدي، ط١، ٢٠١٤'
   - المطبوعة مقرر جامعي لا كتابًا موجهًا لتعليم الأطفال — كيف نستفيد منها دون أن ننقل محتوى جامعيًا إلى
     مرجع للأطفال؟
+- id: S030
+  origin: user
+  part: 1
+  type: كتاب
+  title: 'Before Words: Wordless Picture Books and the Development of Reading in Young Children'
+  title_ar: 'قبل الكلمات: الكتب المصوّرة الصامتة ونمو القراءة لدى الأطفال الصغار'
+  author: Judith T. Lysaker
+  translator: —
+  publisher: Teachers College Press (سلسلة Language and Literacy)
+  year: لم يُتحقق بعد — الصفحة الحقوقية لم تُقرأ
+  edition: —
+  isbn: لم يُتحقق بعد
+  language: الإنجليزية
+  drive_file_id: 1epsWDj6-vwE7nx7eytxQ1FG3WoJa0_ss
+  url: —
+  access: partial
+  access_note: 'فُتحت الصفحات الأولى من ملف PDF: تأكد العنوان والمؤلفة والسلسلة (Language and Literacy،
+    المؤسِّسة Dorothy S. Strickland، محررا السلسلة Celia Genishi وDonna E. Alvermann). الناشر Teachers
+    College Press مستنتَج من هوية السلسلة ولم يُقرأ من صفحة الحقوق بعد. **هذا الكتاب لم يرد في قائمة المصادر
+    التي أرسلتها** — سُجّل لأنه موجود في المجلد.'
+  reliability: علمي محكّم
+  summary: كتاب في سلسلة أكاديمية محكّمة عن دور الكتب المصوّرة بلا كلمات في بناء القراءة لدى الأطفال الصغار.
+  key_ideas:
+  - الكتاب الصامت يدفع الطفل إلى إنتاج السرد بنفسه بدل تلقيه.
+  - إنتاج الطفل للحديث عن الصور جسر إلى القراءة.
+  mapping:
+  - chapter: 8
+    items:
+    - 1
+    - 3
+    - 5
+    reason: الكتاب الصامت محفّز مباشر لتوليد الأفكار (١) ووصف الصور والمواقف المتخيلة (٣) وتوليد الأفكار
+      من المحفزات (٥) — وهو من أدوات الفصل الثامن.
+  - chapter: 2
+    items:
+    - 4
+    - 6
+    reason: الحديث عن صورة أداة للانتقال من الإجابة إلى الحديث القصير (٦) عن خبرة مرئية (٤).
+  quotes_to_verify:
+  - سنة النشر والناشر والرقم الدولي من صفحة الحقوق
+  - الإطار النظري والأدلة التي يقدمها
+  cross_source:
+  - S020
+  - S022
+  - S028
+  - S008
+  value_for_trainer: 'يقدّم أداة عملية جاهزة للفصل الثامن: كتاب بلا كلمات = الطفل هو المؤلف. وهو أيضًا
+    مصدر أكاديمي محكّم، لا كتاب خبرة.'
+  open_questions:
+  - هل أدرجتَه قصدًا أم وصل المجلد بالخطأ؟
+  - هل يُعتمد مرجعًا رئيسيًا للفصل الثامن أم مساعدًا؟
+- id: S031
+  origin: user
+  part: 1
+  type: كتاب جامعي
+  title: Introduction to Language Development
+  title_ar: مدخل إلى نمو اللغة
+  author: Shelia M. Kennison
+  translator: —
+  publisher: لم يُتحقق (تعذّرت قراءة الملف)
+  year: لم يُتحقق
+  edition: —
+  isbn: لم يُتحقق
+  language: الإنجليزية
+  drive_file_id: 1IaMWE75zNZPiZgD4Y75IInRhB0dD3zKz
+  url: —
+  access: none
+  access_note: ⚠️ الملف **٣٣٫٤ م.ب يتجاوز حدّ الاستخراج (٢٥ م.ب)** فلا أستطيع قراءة نصّه. المعلومات الوحيدة
+    المتحققة هي من اسم الملف. **تنبيه:** هذا ليس الكتاب الذي أدرجتَه في قائمتك (Owens) — انظر S004.
+  reliability: علمي محكّم
+  summary: كتاب جامعي في نمو اللغة (بحسب العنوان). لم يُقرأ.
+  key_ideas: []
+  mapping:
+  - chapter: 2
+    items: []
+    reason: مرشّح لأن يكون المرجع البديل عن S004 في الفصل الثاني، **بانتظار قرارك**.
+  quotes_to_verify:
+  - كل البيانات الببليوغرافية
+  - المحتوى كاملًا
+  cross_source:
+  - S004
+  value_for_trainer: لا يمكن تقييمه قبل قراءته. إن أردت اعتماده، يلزم تحويله إلى صيغة أصغر (تقسيم الملف
+    أو رفعه نصًّا) لأتمكن من قراءته.
+  open_questions:
+  - هل تُعتمده بديلًا عن Owens في الفصل الثاني؟
+  - هل يمكن تقسيم الملف إلى جزأين أقل من ٢٥ م.ب؟
