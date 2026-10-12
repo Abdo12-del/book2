@@ -424,6 +424,60 @@ class DocxBuilder:
             r.text = seg
         return p
 
+    @staticmethod
+    def is_part_heading(b: Block) -> bool:
+        return b.t == "h" and b.level == 1 and b.text.strip().startswith("الباب")
+
+    def part_separator(self, b: Block, lead_blocks: list[Block] | None = None):
+        """يبني صفحة فاصلة مستقلة تحمل عنوان الباب ومدخله في ملف وورد (DOCX)."""
+        if self.chapter > 0:
+            p_brk = self.doc.add_paragraph()
+            p_brk.add_run().add_break(WD_BREAK.PAGE)
+        self.chapter += 1
+        self.table_n = self.fig_n = 0
+
+        p_top = self.doc.add_paragraph()
+        make_rtl(p_top, self.rtl)
+        p_top.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        para_spacing(p_top, 75, 8)
+        r_top = p_top.add_run()
+        style_run(r_top, self.f["body"], 11, self.rtl, color=self.colors["accent"])
+        r_top.text = "────────────────────────"
+
+        p_h1 = self.doc.add_paragraph(style="Heading 1")
+        make_rtl(p_h1, self.rtl)
+        p_h1.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        para_spacing(p_h1, 6, 10)
+        r_h1 = p_h1.add_run()
+        style_run(r_h1, self.f["heading"], self.sizes["h1_pt"] * 1.15, self.rtl,
+                  bold=True, color=self.colors["heading"])
+        r_h1.text = A.normalize_numerals(b.text)
+
+        p_orn = self.doc.add_paragraph()
+        make_rtl(p_orn, self.rtl)
+        p_orn.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        para_spacing(p_orn, 4, 10)
+        r_orn = p_orn.add_run()
+        style_run(r_orn, self.f["body"], 10, self.rtl, color=self.colors["accent"])
+        r_orn.text = "◆ ──────── ◆"
+
+        if lead_blocks:
+            for lb in lead_blocks:
+                if lb.text.strip():
+                    self.rich(lb.text, align=WD_ALIGN_PARAGRAPH.CENTER,
+                              size=self.sizes["body_pt"] * 1.02, before=6, after=10)
+
+        p_bot = self.doc.add_paragraph()
+        make_rtl(p_bot, self.rtl)
+        p_bot.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        para_spacing(p_bot, 6, 12)
+        r_bot = p_bot.add_run()
+        style_run(r_bot, self.f["body"], 11, self.rtl, color=self.colors["accent"])
+        r_bot.text = "────────────────────────"
+
+        p_after = self.doc.add_paragraph()
+        p_after.add_run().add_break(WD_BREAK.PAGE)
+
     def heading(self, b: Block):
         if b.level == 1:
             self.chapter += 1
@@ -614,9 +668,21 @@ class DocxBuilder:
             _shade(p, "F2F2F2")
 
     def build(self, blocks):
-        for b in blocks:
+        i = 0
+        n = len(blocks)
+        while i < n:
+            b = blocks[i]
+            if self.is_part_heading(b) and self.th["layout"].get("part_separator_page", True):
+                leads: list[Block] = []
+                j = i + 1
+                while j < n and blocks[j].t == "p":
+                    leads.append(blocks[j])
+                    j += 1
+                self.part_separator(b, leads)
+                i = j
+                continue
             if b.t == "h":
-                if b.level == 1:
+                if b.level == 1 and self.chapter > 0:
                     p = self.doc.add_paragraph()
                     p.add_run().add_break(WD_BREAK.PAGE)
                 self.heading(b)
@@ -642,6 +708,7 @@ class DocxBuilder:
                 para_spacing(p, 8, 10)
             elif b.t == "pagebreak":
                 self.doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+            i += 1
 
 
 def _chapter_word(n: int) -> str:

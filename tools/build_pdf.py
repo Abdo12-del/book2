@@ -202,6 +202,15 @@ def build_styles(theme: dict, fonts: dict[str, str]) -> dict[str, ParagraphStyle
         "front_h": mk("front_h", fontName=fonts["heading"], fontSize=20, leading=32,
                       alignment=TA_CENTER, textColor=colors.Color(*hex_to_rgb(c["heading"])),
                       spaceAfter=18),
+        "part_label": mk("part_label", fontName=fonts["heading"], fontSize=16, leading=26,
+                         alignment=TA_CENTER, textColor=colors.Color(*hex_to_rgb(c["accent"])),
+                         spaceBefore=4, spaceAfter=6),
+        "part_title": mk("part_title", fontName=fonts["heading_bold"], fontSize=23, leading=36,
+                         alignment=TA_CENTER, textColor=head, spaceBefore=2, spaceAfter=10),
+        "part_lead": mk("part_lead", fontName=fonts["body"], fontSize=s["body_pt"] * 1.02,
+                        leading=s["body_leading_pt"] * 1.18, alignment=TA_CENTER,
+                        textColor=ink, spaceBefore=8, spaceAfter=12,
+                        allowWidows=0, allowOrphans=0),
     }
 
 
@@ -321,42 +330,48 @@ class EnsureOddPage(Flowable):
 
 
 class Rule(Flowable):
-    """خط زخرفي أفقي."""
+    """خط زخرفي أفقي متمركز في منتصف عرض النص."""
 
     def __init__(self, width: float, thickness: float = 0.7, color=None, space: float = 6):
         super().__init__()
         self.width, self.thickness, self.color = width, thickness, color or colors.grey
         self.space = space
         self.height = thickness + space * 2
+        self._avail_w = width
 
-    def wrap(self, *a):
-        return self.width, self.height
+    def wrap(self, availWidth, *a):
+        self._avail_w = availWidth or self.width
+        return self._avail_w, self.height
 
     def draw(self):
+        x0 = max(0.0, (self._avail_w - self.width) / 2.0)
         self.canv.setStrokeColor(self.color)
         self.canv.setLineWidth(self.thickness)
-        self.canv.line(0, self.space, self.width, self.space)
+        self.canv.line(x0, self.space, x0 + self.width, self.space)
 
 
 class OrnamentalBreak(Flowable):
-    """فاصل زخرفي مركزي (◆ ─── ◆)."""
+    """فاصل زخرفي مركزي (◆ ─── ◆) متمركز في منتصف عرض النص."""
 
     def __init__(self, width: float, color=None):
         super().__init__()
         self.width, self.color = width, color or colors.Color(0.55, 0.43, 0.25)
         self.height = 22
+        self._avail_w = width
 
-    def wrap(self, *a):
-        return self.width, self.height
+    def wrap(self, availWidth, *a):
+        self._avail_w = availWidth or self.width
+        return self._avail_w, self.height
 
     def draw(self):
         """رسم متجهي للمعيّن (لا يعتمد على وجود الرمز في الخط)."""
         c = self.canv
-        mid, y, r = self.width / 2, 9.0, 3.4
+        x0 = max(0.0, (self._avail_w - self.width) / 2.0)
+        mid, y, r = self._avail_w / 2.0, 9.0, 3.4
         c.setStrokeColor(self.color)
         c.setLineWidth(0.5)
-        c.line(0, y, mid - 20, y)
-        c.line(mid + 20, y, self.width, y)
+        c.line(x0, y, mid - 20, y)
+        c.line(mid + 20, y, x0 + self.width, y)
         c.setFillColor(self.color)
         pth = c.beginPath()
         pth.moveTo(mid, y + r)
@@ -453,6 +468,7 @@ class BookDoc(BaseDocTemplate):
         self.body_start_page: int | None = None
         self.front_start_page: int | None = None
         self.blank_pages: set[int] = set(blank_pages or ())   # صفحات فاصلة (من المرور السابق)
+        self.part_pages: set[int] = set()                     # صفحات عناوين الأبواب الفاصلة
         self.chapter_title = meta.get("title", "")
         self.text_width = p["width_pt"] - (p["margin_outer_mm"] * 2 + p["gutter_mm"]) * MM
 
@@ -492,7 +508,7 @@ class BookDoc(BaseDocTemplate):
             for odd in (True, False):
                 name = f"{section}_{'odd' if odd else 'even'}"
                 out[name] = PageTemplate(id=name, frames=[self._frame(section, odd)],
-                                         onPage=self.decorate, autoNextPageTemplate=None)
+                                         onPageEnd=self.decorate, autoNextPageTemplate=None)
         return out
 
     # ---- تبديل الأقسام
@@ -539,9 +555,10 @@ class BookDoc(BaseDocTemplate):
         head_c = colors.Color(*hex_to_rgb(th["colors"]["heading"]))
 
         # الترويسة: عنوان الفصل (فردي) / عنوان الكتاب (زوجي) بجهة التجليد
+        # تُخفى الترويسة في صفحات عناوين الأبواب الفاصلة لتبقى الصفحة الفاصلة نظيفة
         cfg = th["running"]
         key = cfg.get("odd_header") if odd else cfg.get("even_header")
-        if key and key != "none":
+        if key and key != "none" and page not in self.part_pages:
             label = self.chapter_title if key == "chapter" else self.meta.get("title", "")
             if label:
                 txt = V(label)
@@ -596,6 +613,8 @@ class BookDoc(BaseDocTemplate):
                     self.toc_entries.append(entry)
         if lvl == 1:
             self.chapter_title = getattr(flowable, "_book_text", "")
+            if getattr(flowable, "_is_part_page", False):
+                self.part_pages.add(self.page)
 
 
 # --------------------------------------------------------------------------- بناء القصة
@@ -606,10 +625,57 @@ class StoryBuilder:
         self.chapter = 0
         self.table_n = 0
         self.fig_n = 0
+        self.in_part_guide = False
         self.text_width = (theme["page"]["width_pt"]
                            - (theme["page"]["margin_outer_mm"] * 2 + theme["page"]["gutter_mm"]) * MM)
         self.accent = colors.Color(*hex_to_rgb(theme["colors"]["accent"]))
         self.rule_c = colors.Color(*hex_to_rgb(theme["colors"]["rule"]))
+
+    @staticmethod
+    def is_part_heading(b: Block) -> bool:
+        return b.t == "h" and b.level == 1 and b.text.strip().startswith("الباب")
+
+    def part_separator(self, b: Block, lead_blocks: list[Block] | None = None) -> list[Flowable]:
+        """يبني صفحة فاصلة مستقلة تحمل عنوان الباب ومدخله في منتصف الصفحة،
+        ثم ينتقل إلى الصفحة التالية لعرض خريطة الباب وتفاصيله."""
+        self.chapter += 1
+        self.table_n = 0
+        self.fig_n = 0
+        self.in_part_guide = True
+        raw = b.text.strip()
+        if ":" in raw:
+            part_label, part_main = [s.strip() for s in raw.split(":", 1)]
+            if "—" in part_main:
+                sub_lvl, main_title = [s.strip() for s in part_main.split("—", 1)]
+                part_label = f"{part_label}  •  {sub_lvl}"
+                part_main = main_title
+        else:
+            part_label, part_main = "", raw
+
+        r_top = Rule(self.text_width * 0.52, 1.3, self.accent, space=6)
+        r_bot = Rule(self.text_width * 0.52, 1.3, self.accent, space=6)
+
+        card: list[Flowable] = [Spacer(1, 75), r_top, Spacer(1, 8)]
+        if part_label:
+            card.append(para_runs(part_label, self.st["part_label"], self.f, self.text_width))
+        p_title = mark(
+            para_runs(part_main, self.st["part_title"], self.f, self.text_width),
+            _book_level=1,
+            _book_text=b.text,
+            _is_part_page=True,
+        )
+        card.append(p_title)
+        card.append(Spacer(1, 6))
+        card.append(OrnamentalBreak(self.text_width * 0.45, self.accent))
+        if lead_blocks:
+            card.append(Spacer(1, 8))
+            for lb in lead_blocks:
+                if lb.text.strip():
+                    card.append(para_runs(lb.text, self.st["part_lead"], self.f, self.text_width))
+        card.append(Spacer(1, 8))
+        card.append(r_bot)
+
+        return [SectionSwitch("body"), PageBreak()] + card + [PageBreak()]
 
     def heading(self, b: Block) -> list[Flowable]:
         out: list[Flowable] = []
@@ -618,6 +684,7 @@ class StoryBuilder:
             self.chapter += 1
             self.table_n = 0
             self.fig_n = 0
+            self.in_part_guide = False
             tail: list[Flowable] = []
             if self.chapter > 1 or True:
                 tail.append(Spacer(1, self.th["layout"]["chapter_head_space_before_pt"]))
@@ -669,22 +736,27 @@ class StoryBuilder:
                 counter += 1
             else:
                 marker = "\u2022" if lvl == 0 else "\u2013"
+            lead_mul = 0.86 if self.in_part_guide else 1.0
             mk_style = ParagraphStyle(f"mk{lvl}", parent=self.st["bullet"],
+                                      leading=self.st["bullet"].leading * lead_mul,
                                       alignment=TA_RIGHT, rightIndent=0, spaceAfter=0)
             tx_style = ParagraphStyle(f"it{lvl}", parent=self.st["bullet"],
+                                      leading=self.st["bullet"].leading * lead_mul,
                                       rightIndent=0 if lvl == 0 else 14, spaceAfter=0)
             # العلامة (• – 1.) وحدها بخطٍّ يحتويها: خطّ العربية لا يحمل «•»/«–»
             mk_html = f'<font name="{self.f["latin"]}">{esc(marker)}</font>'
             rows.append([para_runs(it["text"], tx_style, self.f,
                                        avail - marker_w - (14 if lvl else 0)),
                          Paragraph(mk_html, mk_style)])
+        bpad = 1.5 if self.in_part_guide else 4
         t = Table(rows, colWidths=[avail - marker_w, marker_w],
                   style=TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"),
                                     ("LEFTPADDING", (0, 0), (-1, -1), 0),
                                     ("RIGHTPADDING", (0, 0), (-1, -1), 0),
                                     ("TOPPADDING", (0, 0), (-1, -1), 1),
-                                    ("BOTTOMPADDING", (0, 0), (-1, -1), 4)]))
-        return [Spacer(1, 4), t, Spacer(1, 8)]
+                                    ("BOTTOMPADDING", (0, 0), (-1, -1), bpad)]))
+        return [Spacer(1, 2 if self.in_part_guide else 4), t,
+                Spacer(1, 4 if self.in_part_guide else 8)]
 
     def code_block(self, b: Block):
         """مقطع برمجي أحادي المسافة، مع تغليف تلقائي للسطور الطويلة حتى لا تتجاوز الهوامش."""
@@ -705,7 +777,7 @@ class StoryBuilder:
                                            subsequent_indent=" " * (indent + 4)) or [""]
         return XPreformatted("\n".join(out_lines), self.st["code"])
 
-    def table_block(self, b: Block) -> list[Flowable]:
+    def table_block(self, b: Block, compact: bool = False) -> list[Flowable]:
         th, f = self.th, self.f
         header, rows = b.data["header"], b.data["rows"]
         ncol = max([len(header)] + [len(r) for r in rows])
@@ -745,13 +817,14 @@ class StoryBuilder:
             data.append([cell(r[i], self.st["cell"], widths[j]) for j, i in enumerate(order)])
         t = Table(data, colWidths=widths, repeatRows=1, hAlign="CENTER")
         cs = th["colors"]
+        vpad = 3.2 if compact else 5
         style = [
             ("GRID" if th["objects"]["table_style"] != "minimal" else "LINEBELOW",
              (0, 0), (-1, -1), 0.4, colors.Color(*hex_to_rgb(cs["rule"]))),
             ("BACKGROUND", (0, 0), (-1, 0), colors.Color(*hex_to_rgb(cs["table_header_bg"]))),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-            ("TOPPADDING", (0, 0), (-1, -1), 5),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+            ("TOPPADDING", (0, 0), (-1, -1), vpad),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), vpad),
             ("LEFTPADDING", (0, 0), (-1, -1), 5),
             ("RIGHTPADDING", (0, 0), (-1, -1), 5),
         ]
@@ -841,33 +914,65 @@ class StoryBuilder:
         if title:
             inner.append(para_runs(title, self.st["callout_title"], self.f,
                                    self.text_width - 22))
+        c_style = (ParagraphStyle("callout_pg", parent=self.st["callout"],
+                                  leading=self.st["callout"].leading * 0.88)
+                   if self.in_part_guide else self.st["callout"])
         for sub in b.data.get("blocks", []) or [Block("p", text=b.text)]:
             if sub.t == "p":
-                inner.append(para_runs(sub.text, self.st["callout"], self.f,
+                inner.append(para_runs(sub.text, c_style, self.f,
                                        self.text_width - 22))
             elif sub.t == "list":
                 inner += self.bullet_list(sub, width=self.text_width - 22)
         cs = self.th["colors"]
         bg = colors.Color(*hex_to_rgb(cs["callout_bg"]))
         border = colors.Color(*hex_to_rgb(cs["callout_border"]))
+        vpad = 5 if self.in_part_guide else 8
         t = Table([[inner]], colWidths=[self.text_width],
                   style=TableStyle([
                       ("BACKGROUND", (0, 0), (-1, -1), bg),
                       ("LINEBEFORE" if self.th["direction"] == "rtl" else "LINEAFTER",
                        (0, 0), (0, -1), 2.2, border),
                       ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                      ("TOPPADDING", (0, 0), (-1, -1), 8),
-                      ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+                      ("TOPPADDING", (0, 0), (-1, -1), vpad),
+                      ("BOTTOMPADDING", (0, 0), (-1, -1), vpad),
                       ("LEFTPADDING", (0, 0), (-1, -1), 10),
                       ("RIGHTPADDING", (0, 0), (-1, -1), 10),
                   ]))
+        if self.in_part_guide:
+            return [Spacer(1, 3), KeepTogether([t])]
         return [Spacer(1, 6), KeepTogether([t]), Spacer(1, 10)]
 
     def build(self, blocks: list[Block], meta: dict) -> list[Flowable]:
         story: list[Flowable] = []
-        for b in blocks:
+        i = 0
+        n = len(blocks)
+        while i < n:
+            b = blocks[i]
+            if self.is_part_heading(b) and self.th["layout"].get("part_separator_page", True):
+                while story and isinstance(story[-1], Spacer):
+                    story.pop()
+                leads: list[Block] = []
+                j = i + 1
+                while j < n and blocks[j].t == "p":
+                    leads.append(blocks[j])
+                    j += 1
+                story += self.part_separator(b, leads)
+                i = j
+                continue
             if b.t == "h":
-                story += self.heading(b)
+                if b.level == 1:
+                    while story and isinstance(story[-1], Spacer):
+                        story.pop()
+                h_flow = self.heading(b)
+                if (b.level >= 2 and b.text.strip().startswith("فصول هذا الباب")
+                        and i + 1 < n and blocks[i + 1].t == "table"):
+                    while story and isinstance(story[-1], Spacer):
+                        story.pop()
+                    nxt_flow = self.table_block(blocks[i + 1], compact=True)
+                    story += [PageBreak(), h_flow[-1]] + nxt_flow
+                    i += 2
+                    continue
+                story += h_flow
             elif b.t == "p":
                 story += self.paragraph(b)
             elif b.t == "list":
@@ -886,6 +991,7 @@ class StoryBuilder:
                 story.append(PageBreak())
             elif b.t == "toc":
                 story.append(TOCFlowable(list(self.toc_entries), self.th, self.f, self.text_width))
+            i += 1
         return story
 
 

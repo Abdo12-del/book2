@@ -84,7 +84,8 @@ layout:
   first_line_indent_pt: 0
   keep_headings_with_next: true
   widow_orphan_control: true
-  chapter_starts_on: right   # right | left | any
+  chapter_starts_on: any     # right | left | any (بلا صفحات بيضاء فارغة بين الفصول)
+  part_separator_page: true  # صفحة فاصلة مستقلة تحمل عنوان الباب ومدخله عند بداية كل باب
   chapter_head_space_before_pt: 40   # هبوط عنوان الفصل من أعلى الصفحة
   drop_chapter_number: true    # عناوين الفصول في المخطوطة تحمل ترقيمها («الفصل الأول: …»)
                                # فإظهار رقم مولَّد فوقها يُنتج ترقيمين متضاربين في الصفحة

@@ -333,7 +333,7 @@ def paragraph_html(segments: list[tuple[str, str]], width: float, size: float,
     متّسعاً — فينزلق آخر عنصر إلى السطر التالي وتتغيّر مواضع الترقيم. عند
     الاختلاف نُعيد الكسر بأسطر أضيق تدرّجياً حتى تتطابق النتيجتان.
     """
-    global FALLBACKS
+    global FALLBACKS, MISFITS
 
     words = split_words(segments)
     if not words:
