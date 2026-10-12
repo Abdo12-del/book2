@@ -50,6 +50,20 @@ def chapter_word(n: int) -> str:
 
 
 # --------------------------------------------------------------------------- الخطوط
+# اسم العائلة كما يُكتب في Word لكل خطّ مسجَّل (يختلف عن اسم الملف: «Noto Sans Arabic»)
+FAMILY: dict[str, str] = {}
+
+
+def family_name(path: str) -> str:
+    """اسم عائلة الخطّ من جدول الأسماء داخل ملف TTF."""
+    try:
+        from reportlab.pdfbase.ttfonts import TTFontFile
+        nm = TTFontFile(path).familyName
+        return nm.decode("utf-8", "ignore") if isinstance(nm, bytes) else str(nm)
+    except Exception:  # noqa: BLE001
+        return os.path.basename(path).rsplit(".", 1)[0]
+
+
 def register_fonts(theme: dict) -> dict[str, str]:
     """تسجيل الخطوط المتاحة؛ يُعيد خريطة الاسم المنطقي → الاسم المسجّل."""
     avail = {
@@ -61,6 +75,10 @@ def register_fonts(theme: dict) -> dict[str, str]:
         "NotoSansArabic": "NotoSansArabic-Regular.ttf",
         "NotoSansArabic-Bold": "NotoSansArabic-Bold.ttf",
         "NotoSans": "NotoSans-Regular.ttf", "NotoSans-Bold": "NotoSans-Bold.ttf",
+        "NotoSans-Italic": "NotoSans-Italic.ttf",
+        "NotoSans-BoldItalic": "NotoSans-BoldItalic.ttf",
+        "NotoSansArabic-Light": "NotoSansArabic-Light.ttf",
+        "NotoSansArabic-Medium": "NotoSansArabic-Medium.ttf",
         "Tajawal": "Tajawal-Regular.ttf", "Tajawal-Bold": "Tajawal-Bold.ttf",
     }
     system = {
@@ -76,6 +94,7 @@ def register_fonts(theme: dict) -> dict[str, str]:
             try:
                 pdfmetrics.registerFont(TTFont(name, p))
                 registered[name] = name
+                FAMILY[name] = family_name(p)
             except Exception:  # noqa: BLE001
                 pass
     for name, p in system.items():
@@ -83,24 +102,28 @@ def register_fonts(theme: dict) -> dict[str, str]:
             try:
                 pdfmetrics.registerFont(TTFont(name, p))
                 registered[name] = name
+                FAMILY[name] = family_name(p)
             except Exception:  # noqa: BLE001
                 pass
-    for fam in ("Amiri", "Tajawal", "DejaVuSans"):
+    for fam in ("NotoSansArabic", "NotoSans", "Amiri", "DejaVuSans"):
         if all(f"{fam}{s}" in registered for s in ("", "-Bold")):
             pdfmetrics.registerFontFamily(
                 fam, normal=fam, bold=f"{fam}-Bold",
                 italic=registered.get(f"{fam}-Italic", fam),
                 boldItalic=registered.get(f"{fam}-BoldItalic", f"{fam}-Bold"))
     # بدائل آمنة إن غاب خط
-    def res(want: str, fallback: str = "Amiri") -> str:
+    def res(want: str, fallback: str = "NotoSansArabic") -> str:
         return want if want in registered else (fallback if fallback in registered else
                                                 next(iter(registered), "Helvetica"))
 
     f = theme["fonts"]
+    lat = res(f.get("latin", "NotoSans"), f["body"])
     return {"body": res(f["body"]), "body_bold": res(f["body_bold"], f["body"]),
             "body_italic": res(f["body_italic"], f["body"]),
             "heading": res(f["heading"], f["body"]), "heading_bold": res(f["heading_bold"], f["body"]),
-            "mono": res(f["mono"], "DejaVuSansMono"), "latin": res(f["latin"], f["body"])}
+            "mono": res(f["mono"], "DejaVuSansMono"), "latin": lat,
+            "latin_bold": res(f.get("latin_bold", "NotoSans-Bold"), lat),
+            "latin_italic": res(f.get("latin_italic", "NotoSans-Italic"), lat)}
 
 
 # --------------------------------------------------------------------------- الأنماط
@@ -207,9 +230,17 @@ def para_runs(text: str, style: ParagraphStyle, fonts: dict[str, str],
     """
     from manuscript import _inline
 
-    def font_of(kind: str) -> str:
-        return {"b": fonts["body_bold"], "i": fonts["body_italic"],
-                "c": fonts["mono"]}.get(kind or "", fonts["body"])
+    def font_of(kind: str, chunk: str = "") -> str:
+        """خطّ المجموعة: العربية بخطّها، واللاتينية والأرقام والترقيم بخطّها.
+
+        خطّ العربية (Noto Sans Arabic) لا يحتوي حروفاً لاتينية ولا ترقيمًا
+        (— … « »)، وخطّ اللاتينية لا يحتوي الأشكال العربية — فالاختيار بالمحتوى.
+        """
+        if TF.is_arabic_run(chunk):
+            return {"b": fonts["body_bold"], "i": fonts["body_italic"],
+                    "c": fonts["mono"]}.get(kind or "", fonts["body"])
+        return {"b": fonts["latin_bold"], "i": fonts["latin_italic"],
+                "c": fonts["mono"]}.get(kind or "", fonts["latin"])
 
     segs = _inline(A.normalize_numerals(text))
     html = TF.paragraph_html(segs, width, style.fontSize, font_of,
@@ -406,7 +437,7 @@ class TOCFlowable(Flowable):
                     c.line(x_left, y + h * 0.35, x_right, y + h * 0.35)
                     c.setDash()
             c.setFillColor(text_col)
-            c.setFont(self.fonts["body"], self.theme["sizes"]["toc_pt"] * 0.9)
+            c.setFont(self.fonts["latin"], self.theme["sizes"]["toc_pt"] * 0.9)
             c.drawString(6, y + h * 0.22, fm(page, style))
             y -= 4 if level == 1 else 0
 
@@ -514,13 +545,11 @@ class BookDoc(BaseDocTemplate):
             label = self.chapter_title if key == "chapter" else self.meta.get("title", "")
             if label:
                 txt = V(label)
-                canv.setFont(self.fonts["body"], th["sizes"]["header_pt"])
                 canv.setFillColor(muted)
                 y = H - p["header_from_top_mm"] * MM
-                if gutter_right:
-                    canv.drawRightString(x2, y, txt)
-                else:
-                    canv.drawString(x1, y, txt)
+                self._draw_runs(canv, txt, x2 if gutter_right else x1, y,
+                                th["sizes"]["header_pt"], right=gutter_right,
+                                font=self.fonts["body"])
                 if cfg.get("header_rule"):
                     canv.setStrokeColor(rule_c)
                     canv.setLineWidth(0.5)
@@ -535,9 +564,26 @@ class BookDoc(BaseDocTemplate):
                 n = page - (self.body_start_page or 1) + 1
                 num_style = cfg.get("page_number_style", "arabic-indic")
             txt = A.format_number(n, num_style)
-            canv.setFont(self.fonts["heading"], th["sizes"]["footer_pt"])
+            canv.setFont(self.fonts["latin"], th["sizes"]["footer_pt"])
             canv.setFillColor(head_c)
             canv.drawCentredString((x1 + x2) / 2, p["footer_from_bottom_mm"] * MM, txt)
+
+    def _draw_runs(self, canv, text: str, x: float, y: float, size: float,
+                   right: bool = True, color=None, font=None) -> None:
+        """يرسم سطراً واحداً بمجاميع خطوطه (عربي/لاتيني) من نقطة محاذاة واحدة."""
+        ar_font = font or self.fonts["heading"]
+        lat_font = self.fonts["latin"]
+        runs = TF.script_runs(text)
+        widths = [pdfmetrics.stringWidth(t, ar_font if a else lat_font, size)
+                  for a, t in runs]
+        if color is not None:
+            canv.setFillColor(color)
+        if right:
+            x -= sum(widths)
+        for (a, t), w in zip(runs, widths):
+            canv.setFont(ar_font if a else lat_font, size)
+            canv.drawString(x, y, t)
+            x += w
 
     # ---- جمع مدخلات الفهرس
     def afterFlowable(self, flowable):
@@ -627,9 +673,11 @@ class StoryBuilder:
                                       alignment=TA_RIGHT, rightIndent=0, spaceAfter=0)
             tx_style = ParagraphStyle(f"it{lvl}", parent=self.st["bullet"],
                                       rightIndent=0 if lvl == 0 else 14, spaceAfter=0)
+            # العلامة (• – 1.) وحدها بخطٍّ يحتويها: خطّ العربية لا يحمل «•»/«–»
+            mk_html = f'<font name="{self.f["latin"]}">{esc(marker)}</font>'
             rows.append([para_runs(it["text"], tx_style, self.f,
                                        avail - marker_w - (14 if lvl else 0)),
-                         Paragraph(esc(marker), mk_style)])
+                         Paragraph(mk_html, mk_style)])
         t = Table(rows, colWidths=[avail - marker_w, marker_w],
                   style=TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"),
                                     ("LEFTPADDING", (0, 0), (-1, -1), 0),
@@ -675,9 +723,11 @@ class StoryBuilder:
             """خلية جدول: يُكسَّر نصّها على عرض عمودها نفسه قبل التشكيل."""
             from manuscript import _inline
 
-            def font_of(kind: str) -> str:
-                return {"b": f["body_bold"], "i": f["body_italic"],
-                        "c": f["mono"]}.get(kind or "", f["body"])
+            def font_of(kind: str, chunk: str = "") -> str:
+                table = ({"b": f["body_bold"], "i": f["body_italic"], "c": f["mono"]}
+                         if TF.is_arabic_run(chunk) else
+                         {"b": f["latin_bold"], "i": f["latin_italic"], "c": f["mono"]})
+                return table.get(kind or "", f["body"] if TF.is_arabic_run(chunk) else f["latin"])
 
             plain = A.normalize_numerals(text)
             # الخلايا القصيرة (أرقام، كلمات مفردة) تُوسّط، والطويلة تُحاذى لليمين
@@ -739,10 +789,10 @@ class StoryBuilder:
         for row in rows:
             for i, txt in enumerate(row[:ncol]):
                 vis = V(str(txt))
-                line_w[i] = max(line_w[i], pdfmetrics.stringWidth(vis, self.f["body"], size))
+                fo = lambda k, t: self.f["body"] if TF.is_arabic_run(t) else self.f["latin"]  # noqa: E731
+                line_w[i] = max(line_w[i], TF.run_width(vis, "", size, fo))
                 for w in vis.split():
-                    word_w[i] = max(word_w[i],
-                                    pdfmetrics.stringWidth(w, self.f["body"], size))
+                    word_w[i] = max(word_w[i], TF.run_width(w, "", size, fo))
         avail = self.text_width
         mins = [min(word_w[i] + pad, avail * 0.58) for i in range(ncol)]
         base = sum(mins) or 1.0

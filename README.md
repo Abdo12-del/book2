@@ -108,8 +108,13 @@ python3 tools/preview.py output/book.pdf output/preview.png --cols 4
    البديل المُطبَّق: مخرجان من مصدر واحد — وهذا أدقّ تصميمياً من التحويل.
 2. **الخطوط في PDF يجب أن تحتوي الأشكال السياقية** (Presentation Forms).
    خطوط مثل Tajawal وAlmarai وNoto Kufi Arabic **تُسقط حروفاً** في هذا المسار.
-   استخدم `tools/check_fonts.py` قبل اعتماد أي خط (الحالي: Amiri للمتن،
-   Noto Sans Arabic للعناوين، وNoto Naskh Arabic بديل للمتن).
+   استخدم `tools/check_fonts.py` قبل اعتماد أي خط.
+   **المنظومة الحالية (حديثة غير أدبية):** `Noto Sans Arabic` للعربية
+   (Regular/Bold، وLight للمائل) + `Noto Sans` للاتيني والأرقام والترقيم
+   (`« » — … ·`) — والاختيار يجري لكل مجموعة داخل السطر حسب محتواها
+   (`tools/textflow.script_runs`)، لأن خطّ العربية بلا حروف لاتينية والعكس.
+   خطوط `Amiri`/`Noto Naskh Arabic` النسخية باقية في `assets/fonts` كبدائل،
+   و`Tajawal`/`Almarai` غير صالحة لهذا المسار (أشكال سياقية ناقصة).
 3. **التشكيل (الحركات):** لا يطبّق ReportLab تموضع العلامات (GPOS)، لذا قد
    تنزاح الحركات قليلاً. النص غير المشكّول يظهر سليماً تماماً.
 4. **الأرقام في DOCX:** شكل أرقام الصفحات (١٢٣ مقابل 123) يتبع إعدادات

@@ -18,7 +18,7 @@ DEST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 
 # (repo, path في المستودع, اسم الملف عند الحفظ)
 FONTS = [
-    # Amiri - خط نسخي كلاسيكي ممتاز لمتن الكتب (OFL)
+    # Amiri - نسخي كلاسيكي (بديل أدبي؛ لم يبقَ الافتراضي بعد تحوّل الكتاب إلى Sans) (OFL)
     ("aliftype/amiri", "fonts/Amiri-Regular.ttf", "Amiri-Regular.ttf"),
     ("aliftype/amiri", "fonts/Amiri-Bold.ttf", "Amiri-Bold.ttf"),
     ("aliftype/amiri", "fonts/Amiri-Italic.ttf", "Amiri-Italic.ttf"),
@@ -32,6 +32,14 @@ FONTS = [
     # Noto Sans لاتيني للمصاحب الأجنبي داخل الكتاب (OFL)
     ("notofonts/noto-fonts", "hinted/ttf/NotoSans/NotoSans-Regular.ttf", "NotoSans-Regular.ttf"),
     ("notofonts/noto-fonts", "hinted/ttf/NotoSans/NotoSans-Bold.ttf", "NotoSans-Bold.ttf"),
+    # وزنان إضافيان:
+    #   • مائل لاتيني: للعناوين الأجنبية داخل المتن (*Learning and Instruction*)
+    #   • عربي خفيف: بديل «المائل» في العربية (أمثلة النطق مثل *رسمتُ*) لأن
+    #     العربية لا تُمال، والتمييز عندنا بوزن أخف لا بإزاحة الحروف.
+    ("notofonts/noto-fonts", "hinted/ttf/NotoSans/NotoSans-Italic.ttf", "NotoSans-Italic.ttf"),
+    ("notofonts/noto-fonts", "hinted/ttf/NotoSans/NotoSans-BoldItalic.ttf", "NotoSans-BoldItalic.ttf"),
+    ("notofonts/noto-fonts", "hinted/ttf/NotoSansArabic/NotoSansArabic-Light.ttf", "NotoSansArabic-Light.ttf"),
+    ("notofonts/noto-fonts", "hinted/ttf/NotoSansArabic/NotoSansArabic-Medium.ttf", "NotoSansArabic-Medium.ttf"),
 ]
 
 

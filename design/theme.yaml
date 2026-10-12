@@ -30,34 +30,36 @@ direction: rtl             # rtl | ltr  (اتجاه الكتاب)
 numerals: western          # western | arabic-indic
 
 fonts:
-  body: Amiri              # خط المتن
-  body_bold: Amiri-Bold
-  body_italic: Amiri-Italic
-  # خط العناوين: Amiri-Bold وليس NotoSansArabic-Bold.
-  # السبب (مُتحقَّق منه بفحص cmap): خطوط Noto العربية لا تحتوي الترقيم اللاتيني
-  # (— … · • –) إطلاقًا، وعناوين الفصول المعتمدة تحوي الشرطة الطويلة «—»،
-  # فكانت تظهر فارغة (NUL) في الـPDF. وAmiri يجمع بين تغطية كاملة للأشكال السياقية
-  # (611 + 140) وبين الترقيم اللاتيني. أما Almarai/Tajawal فترقيمها موجود لكن
-  # أشكالها السياقية ناقصة (59/91) فلا تصلح.
-  heading: Amiri-Bold
-  heading_bold: Amiri-Bold
-  mono: DejaVuSansMono     # للأكواد والنصوص اللاتينية
-  latin: NotoSans          # المصاحب اللاتيني داخل النص العربي
-  # بدائل متاحة ومُختبرة: Amiri / Amiri-Bold / NotoNaskhArabic / NotoNaskhArabic-Bold
-  # ⚠ Tajawal وAlmarai غير صالحين للـPDF هنا: لا تحتوي الأشكال السياقية كاملةً
+  # ── المنظومة الجديدة: خطّ حديث غير أدبي (Sans) بدل الخطّ النسخي الكلاسيكي ──
+  # خطّ العربية يحتوي كل الأشكال السياقية (611+140) والحركات، لكنه بلا حروف
+  # لاتينية ولا ترقيم لاتيني (— … « » ·)؛ ولذلك يمرّ كل نصّ بمجموعات (tools/
+  # textflow.script_runs): العربية بخطّها، واللاتينية/الأرقام بخطّها المصاحب.
+  # (الاختيار مُتحقَّق آلياً: 0 محارف ناقصة في أي من المخرجين.)
+  body: NotoSansArabic              # متن الكتاب
+  body_bold: NotoSansArabic-Bold
+  body_italic: NotoSansArabic-Light # «مائل» العربية = وزن أخف (العربية لا تُمال)،
+                                    # يُستخدم لأمثلة النطق: *رسمتُ* بدل *رسمت*
+  heading: NotoSansArabic-Bold      # العناوين
+  heading_bold: NotoSansArabic-Bold
+  mono: DejaVuSansMono              # الأكواد
+  latin: NotoSans                   # المصاحب اللاتيني: الأسماء والأرقام والترقيم
+  latin_bold: NotoSans-Bold
+  latin_italic: NotoSans-Italic     # عناوين أجنبية داخل المتن: *Learning and Instruction*
+  # بدائل متاحة: NotoSansArabic-Medium / NotoNaskhArabic (نسخي) / Amiri (نسخي أدبي)
+  # ⚠ Amiri وNotoNaskhArabic «أدبيان» في الطابع؛ وTajawal/Almarai ناقصا الأشكال السياقية
 
 sizes:
-  body_pt: 12.5
-  body_leading_pt: 21.5    # تباعد الأسطر (≈1.72) — أريَح للعين في الأميري
-  h1_pt: 22                # عنوان الفصل
-  h2_pt: 16.5
-  h3_pt: 13.5
-  h4_pt: 12.5
-  caption_pt: 10.5
-  toc_pt: 12
-  header_pt: 9.5
-  footer_pt: 10
-  table_pt: 11
+  body_pt: 11.5
+  body_leading_pt: 19          # تباعد الأسطر (≈1.65) — مريح للعين في الـSans
+  h1_pt: 20
+  h2_pt: 15
+  h3_pt: 12.5
+  h4_pt: 11.5
+  caption_pt: 10
+  toc_pt: 11
+  header_pt: 9
+  footer_pt: 9.5
+  table_pt: 10.5
 
 colors:
   text: "#1A1A1A"

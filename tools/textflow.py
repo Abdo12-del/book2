@@ -100,6 +100,42 @@ def split_words(segments: list[tuple[str, str]]) -> list[Word]:
     return words
 
 
+def is_arabic_run(text: str) -> bool:
+    """هل في النصّ محرف عربي أو شكل سياقي أو حركة؟"""
+    return bool(_ARABIC_RE.search(text))
+
+
+def script_runs(text: str) -> list[tuple[bool, str]]:
+    """يقسّم نصّاً مرئياً إلى مجموعات متجانسة: ``(عربي؟, النصّ)``.
+
+    لماذا؟ خطّ العربية المختار (Noto Sans Arabic) لا يحتوي الحروف اللاتينية ولا
+    الترقيم اللاتيني (— … « » ·)، وخطّ اللاتينية (Noto Sans) لا يحتوي الأشكال
+    العربية. تمرير نصّ مختلط إلى خطّ واحد يُنتج محارف فارغة (NUL)، فنجعل لكل
+    مجموعة خطّها. الفراغ يبقى مع المجموعة الجارية حتى لا تتفتّت المجموعة الواحدة.
+    """
+    out: list[tuple[bool, str]] = []
+    buf, cur = "", None
+    for ch in text:
+        ar = bool(_ARABIC_RE.match(ch))
+        if cur is None:
+            cur = ar
+        elif ch.isspace():
+            pass                       # الفراغ يتبع المجموعة الحالية
+        elif ar != cur:
+            out.append((cur, buf))
+            buf, cur = "", ar
+        buf += ch
+    if buf:
+        out.append((bool(cur), buf))
+    return out
+
+
+def run_width(text: str, kind: str, size: float, font_of) -> float:
+    """عرض نصّ بخطوط مجموعاته (عربية/لاتينية) — يُستخدم في القياس والتقسيم."""
+    return sum(pdfmetrics.stringWidth(part, font_of(kind, part), size)
+               for _, part in script_runs(text))
+
+
 def _shape_word(word: Word) -> str:
     """الشكل المرئي لكلمة منفردة (يُستخدم للقياس فقط)."""
     return get_display(arabic_reshaper.reshape(word.text), base_dir=A.BASE_DIR)
@@ -109,7 +145,7 @@ def prepare(words: list[Word], size: float, font_of) -> None:
     """يحسب الشكل المرئي والعرض لكل كلمة."""
     for w in words:
         w.visual = _shape_word(w)
-        w.width = pdfmetrics.stringWidth(w.visual, font_of(w.kind), size)
+        w.width = run_width(w.visual, w.kind, size, font_of)
 
 
 def measure(words: list[Word], size: float, font_of) -> float:
@@ -153,7 +189,7 @@ def _split_overlong(words: list[Word], width: float, size: float, font_of) -> li
         buf = ""
         for ch in w.text:
             trial = buf + ch
-            if pdfmetrics.stringWidth(get_display(trial, base_dir=A.BASE_DIR), font_of(w.kind), size) > width and buf:
+            if run_width(get_display(trial, base_dir=A.BASE_DIR), w.kind, size, font_of) > width and buf:
                 out.append(Word(buf, w.kind))
                 buf = ch
             else:
@@ -213,11 +249,10 @@ def line_html(line: list[Word], font_of) -> str:
     kinds = _map_styles(line, parts)
     out: list[str] = []
     for part, kind in zip(parts, kinds):
-        txt = saxutils.escape(part)
-        if kind:
-            out.append(f'<font name="{font_of(kind)}">{txt}</font>')
-        else:
-            out.append(txt)
+        # كل جزء قد يخلط عربياً ولاتينياً (مثل «وTED») فنُلبّس كل مجموعة خطّها
+        out.append("".join(
+            f'<font name="{font_of(kind, run)}">{saxutils.escape(run)}</font>'
+            for _, run in script_runs(part)))
     return _SPACE.join(out)
 
 
@@ -307,4 +342,5 @@ def plain_visual(text: str) -> str:
 
 
 __all__ = ["Word", "split_words", "prepare", "break_lines", "visual_parts",
+           "is_arabic_run", "script_runs", "run_width",
            "line_html", "paragraph_html", "plain_visual", "measure", "SAFETY_PT"]

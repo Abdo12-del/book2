@@ -92,12 +92,14 @@ def check_layout(path: str, rpt: Report, theme: dict) -> None:
                             overflow.append(i + 1)
         if not spans:
             continue
-        # عنوان يتيم: آخر سطر في الصفحة عنوان وليس بعده نص
-        lowest = max(spans, key=lambda s: s["bbox"][3])
-        if round(lowest["size"], 1) in [round(x, 1) for x in head_sizes]:
-            below = [s for s in spans if s["bbox"][1] > lowest["bbox"][3] - 1]
-            if not below and lowest["bbox"][3] > H - bottom - 60:
-                orphans.append(i + 1)
+        # عنوان يتيم: آخر سطر في الصفحة عنوان وليس بعده نص.
+        # الغلاف (ص1) مستثنى: صفحة مُصمَّمة بلا متن يتدفّق، وسطر الطبع آخرها بطبيعته.
+        lowest = max(spans, key=lambda s: s["bbox"][3]) if i else None
+        if lowest is not None:
+            if round(lowest["size"], 1) in [round(x, 1) for x in head_sizes]:
+                below = [s for s in spans if s["bbox"][1] > lowest["bbox"][3] - 1]
+                if not below and lowest["bbox"][3] > H - bottom - 60:
+                    orphans.append(i + 1)
         # صفحة ذات سطر أو سطرين فقط (عدا صفحات بداية الفصول)
         lines = page.get_text("text").strip().split("\n")
         body_lines = [l for l in lines if len(l.strip()) > 3]

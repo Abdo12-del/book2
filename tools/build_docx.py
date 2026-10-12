@@ -45,6 +45,11 @@ PPR_AFTER_SHD = ("w:tabs", "w:suppressAutoHyphens", "w:kinsoku", "w:wordWrap", "
                  "w:suppressOverlap", "w:jc", "w:textDirection", "w:textAlignment",
                  "w:textboxTightWrap", "w:outlineLvl", "w:divId", "w:cnfStyle", "w:rPr",
                  "w:sectPr", "w:pPrChange")
+RPR_AFTER_ICS = ("w:caps", "w:smallCaps", "w:strike", "w:dstrike", "w:outline", "w:shadow",
+                 "w:emboss", "w:imprint", "w:noProof", "w:snapToGrid", "w:vanish", "w:webHidden",
+                 "w:color", "w:spacing", "w:w", "w:kern", "w:position", "w:sz", "w:szCs",
+                 "w:highlight", "w:u", "w:effect", "w:bdr", "w:shd", "w:fitText", "w:vertAlign",
+                 "w:rtl", "w:cs", "w:em", "w:lang", "w:eastAsianLayout", "w:specVanish", "w:oMath")
 RPR_AFTER_BCS = ("w:i", "w:iCs", "w:caps", "w:smallCaps", "w:strike", "w:dstrike", "w:outline",
                  "w:shadow", "w:emboss", "w:imprint", "w:noProof", "w:snapToGrid", "w:vanish",
                  "w:webHidden", "w:color", "w:spacing", "w:w", "w:kern", "w:position", "w:sz",
@@ -79,15 +84,61 @@ def make_rtl(p, rtl: bool = True) -> None:
         p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
 
 
-def style_run(run, font_name: str, size_pt: float | None = None, rtl: bool = True,
-              bold: bool | None = None, italic: bool | None = None,
-              color: str | None = None) -> None:
-    rpr = run._r.get_or_add_rPr()
+# --------------------------------------------------------------------------- الخطوط
+# «خطّ واحد لكل الوثيقة» لا يكفي: خطّ العربية (Noto Sans Arabic) بلا حروف لاتينية
+# ولا ترقيم لاتيني، وخطّ اللاتينية (Noto Sans) بلا أشكال عربية. Word نفسه يحلّ
+# المشكلة إن أعطيناه الخطّين معاً: ascii/hAnsi لِلَّاتيني والرقم، وcs للعربية.
+FONT_PAIRS: dict[str, tuple[str, str]] = {}
+AR_ITALIC_FAMILY = ""            # «مائل» العربية = وزن أخف (العربية لا تُمال)
+
+
+def set_font_pairs(fonts: dict[str, str]) -> None:
+    """يهيّئ أزواج الخطوط من أسماء الخطوط المسجَّلة في build_pdf (عبر جدول FAMILY)."""
+    from build_pdf import FAMILY
+
+    def fam(key: str, default: str) -> str:
+        f = fonts.get(key, "")
+        return FAMILY.get(f, f or default)
+
+    ar = fam("body", "Noto Sans Arabic")
+    ar_b = fam("body_bold", ar)
+    ar_i = fam("body_italic", ar)
+    head = fam("heading", ar)
+    lat = fam("latin", "Noto Sans")
+    mono = fam("mono", "DejaVu Sans Mono")
+    global AR_ITALIC_FAMILY
+    AR_ITALIC_FAMILY = ar_i
+    pair = {fonts["body"]: (lat, ar),
+            fonts.get("body_bold", fonts["body"]): (lat, ar_b),
+            fonts.get("body_italic", fonts["body"]): (lat, ar_i),
+            fonts.get("heading", fonts["body"]): (lat, head),
+            fonts.get("heading_bold", fonts["body"]): (lat, head),
+            fonts.get("latin", fonts["body"]): (lat, ar),
+            fonts.get("latin_bold", fonts["body"]): (lat, ar),
+            fonts.get("latin_italic", fonts["body"]): (lat, ar),
+            fonts.get("mono", fonts["body"]): (mono, mono)}
+    FONT_PAIRS.clear()
+    FONT_PAIRS.update(pair)
+
+
+def _rfonts(rpr, latin: str, arabic: str) -> None:
+    """يضبط w:rFonts: الخطّ اللاتيني لـ ascii/hAnsi/eastAsia والعربي لـ cs."""
     if rpr.find(qn("w:rFonts")) is None:
         _sub(rpr, "w:rFonts", RPR_AFTER_RFONTS)
     rf = rpr.find(qn("w:rFonts"))
-    for a in ("ascii", "hAnsi", "cs", "eastAsia"):
-        rf.set(qn(f"w:{a}"), font_name)
+    for a in ("ascii", "hAnsi", "eastAsia"):
+        rf.set(qn(f"w:{a}"), latin)
+    rf.set(qn("w:cs"), arabic)
+
+
+def style_run(run, font_name: str, size_pt: float | None = None, rtl: bool = True,
+              bold: bool | None = None, italic: bool | None = None,
+              color: str | None = None) -> None:
+    latin, arabic = FONT_PAIRS.get(font_name, (font_name, font_name))
+    if italic and AR_ITALIC_FAMILY:
+        arabic = AR_ITALIC_FAMILY          # لا إمالة للعربية، بل وزن أخفّ
+    rpr = run._r.get_or_add_rPr()
+    _rfonts(rpr, latin, arabic)
     if bold is not None:
         run.bold = bold
         b = rpr.find(qn("w:bCs"))
@@ -97,6 +148,11 @@ def style_run(run, font_name: str, size_pt: float | None = None, rtl: bool = Tru
             b.set(qn("w:val"), "1" if bold else "0")
     if italic is not None:
         run.italic = italic
+        ics = rpr.find(qn("w:iCs"))
+        if ics is None:
+            # w:iCs بعد w:i في المخطّط — ولا يجوز أن يسبقه
+            ics = _sub(rpr, "w:iCs", RPR_AFTER_ICS)
+        ics.set(qn("w:val"), "0")          # العربية تكفيها حسنة الوزن، لا الإمالة
     if size_pt is not None:
         run.font.size = Pt(size_pt)
         for tag in ("w:szCs",):
@@ -115,7 +171,7 @@ def style_run(run, font_name: str, size_pt: float | None = None, rtl: bool = Tru
     lang.set(qn("w:bidi"), "ar-SA")
 
 
-def add_field(p, instr: str, placeholder: str = "", font_name: str = "Amiri",
+def add_field(p, instr: str, placeholder: str = "", font_name: str = "",
               size_pt: float = 10, rtl: bool = True) -> None:
     """إدراج حقل Word حقيقي (PAGE / TOC / STYLEREF / NUMPAGES)."""
     def run():
@@ -252,11 +308,7 @@ def setup_styles(doc, theme: dict, fonts: dict[str, str]) -> None:
     normal.font.name = body_font
     normal.font.size = Pt(s["body_pt"])
     rpr = normal.element.get_or_add_rPr()
-    if rpr.find(qn("w:rFonts")) is None:
-        _sub(rpr, "w:rFonts", RPR_AFTER_RFONTS)
-    rf = rpr.find(qn("w:rFonts"))
-    for a in ("ascii", "hAnsi", "cs", "eastAsia"):
-        rf.set(qn(f"w:{a}"), body_font)
+    _rfonts(rpr, *FONT_PAIRS.get(body_font, (body_font, body_font)))
     if rtl and rpr.find(qn("w:rtl")) is None:
         _sub(rpr, "w:rtl", RPR_AFTER_RTL, val="1")
     normal.paragraph_format.line_spacing = s["body_leading_pt"] / s["body_pt"]
@@ -274,11 +326,7 @@ def setup_styles(doc, theme: dict, fonts: dict[str, str]) -> None:
         st.font.bold = True
         st.font.color.rgb = RGBColor.from_string(c["heading"].lstrip("#"))
         rpr = st.element.get_or_add_rPr()
-        if rpr.find(qn("w:rFonts")) is None:
-            _sub(rpr, "w:rFonts", RPR_AFTER_RFONTS)
-        rf = rpr.find(qn("w:rFonts"))
-        for a in ("ascii", "hAnsi", "cs", "eastAsia"):
-            rf.set(qn(f"w:{a}"), head_font)
+        _rfonts(rpr, *FONT_PAIRS.get(head_font, (head_font, head_font)))
         pf = st.paragraph_format
         pf.space_before, pf.space_after = Pt(before), Pt(after)
         pf.alignment = WD_ALIGN_PARAGRAPH.CENTER if name == "Heading 1" else align
@@ -287,6 +335,7 @@ def setup_styles(doc, theme: dict, fonts: dict[str, str]) -> None:
 
     cap = doc.styles["Caption"]
     cap.font.name = body_font
+    _rfonts(cap.element.get_or_add_rPr(), *FONT_PAIRS.get(body_font, (body_font, body_font)))
     cap.font.size = Pt(s["caption_pt"])
     cap.font.color.rgb = RGBColor.from_string(c["muted"].lstrip("#"))
     cap.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -295,6 +344,8 @@ def setup_styles(doc, theme: dict, fonts: dict[str, str]) -> None:
 
     q = doc.styles["Quote"]
     q.font.name = fonts.get("body_italic", body_font)
+    _rfonts(q.element.get_or_add_rPr(),
+            *FONT_PAIRS.get(fonts.get("body_italic", body_font), (body_font, body_font)))
     q.font.size = Pt(s["body_pt"] * 0.95)
     q.font.italic = True
     q.font.color.rgb = RGBColor.from_string(c["muted"].lstrip("#"))
@@ -304,6 +355,8 @@ def setup_styles(doc, theme: dict, fonts: dict[str, str]) -> None:
         try:
             st = doc.styles[nm]
             st.font.name = body_font
+            _rfonts(st.element.get_or_add_rPr(),
+                    *FONT_PAIRS.get(body_font, (body_font, body_font)))
             st.font.size = Pt(s["body_pt"])
             st.paragraph_format.alignment = align
         except KeyError:
@@ -322,11 +375,7 @@ def setup_styles(doc, theme: dict, fonts: dict[str, str]) -> None:
         st.font.bold = bold
         st.font.color.rgb = RGBColor.from_string(color.lstrip("#"))
         rpr = st.element.get_or_add_rPr()
-        if rpr.find(qn("w:rFonts")) is None:
-            _sub(rpr, "w:rFonts", RPR_AFTER_RFONTS)
-        rf = rpr.find(qn("w:rFonts"))
-        for a in ("ascii", "hAnsi", "cs", "eastAsia"):
-            rf.set(qn(f"w:{a}"), font)
+        _rfonts(rpr, *FONT_PAIRS.get(font, (font, font)))
         st.paragraph_format.space_before = Pt(before)
         st.paragraph_format.space_after = Pt(after)
         st.paragraph_format.alignment = align_
@@ -609,6 +658,7 @@ def build_docx(blocks, meta: dict, out_path: str, theme_path: str | None = None,
     if theme["running"].get("front_matter_numbering") != "roman":
         theme["running"]["front_matter_numbering"] = A.numeral_style()
     fonts = register_fonts(theme)
+    set_font_pairs(fonts)
     rtl = theme["direction"] == "rtl"
 
     doc = Document()
