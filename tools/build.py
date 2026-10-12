@@ -37,6 +37,11 @@ def load_book(book_yaml: str) -> tuple[dict, list]:
             print(f"  ! ملف غير موجود في الـspine: {path}")
             continue
         loaded = load_blocks(path)
+        if not [b for b in loaded if b.t not in ("h", "toc")]:
+            # ملف بلا متن (مثل ملف الفهرس: عنوان «المحتويات» + <!-- toc -->):
+            # لا نُدرجه حتى لا يُنتج صفحة فصل فارغة بعنوان مكرّر للفهرس المولَّد.
+            print(f"  · تخطّي {rel}: بلا متن")
+            continue
         print(f"  ✓ {rel}: {len(loaded)} كتلة")
         blocks += loaded
     return meta, blocks

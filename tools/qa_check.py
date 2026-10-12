@@ -117,6 +117,22 @@ def check_layout(path: str, rpt: Report, theme: dict) -> None:
     doc.close()
 
 
+def frame_text(page, theme: dict | None) -> str:
+    """نصّ إطار المتن وحده — بلا ترويسة ولا تذييل (لكشف الصفحات الفاصلة)."""
+    from theme import MM as _MM
+    pg = (theme or {}).get("page") or {}
+    top = pg.get("margin_top_mm", 20) * _MM - 2
+    bottom = page.rect.height - pg.get("margin_bottom_mm", 20) * _MM + 2
+    out: list[str] = []
+    for blk in page.get_text("dict")["blocks"]:
+        y0, y1 = blk["bbox"][1], blk["bbox"][3]
+        if y1 <= top or y0 >= bottom or not blk.get("lines"):
+            continue
+        out.append("\n".join("".join(sp["text"] for sp in ln["spans"])
+                              for ln in blk["lines"]))
+    return "\n".join(out)
+
+
 def check_pdf(path: str, rpt: Report, source_text: str | None = None,
               render_dir: str | None = None, expect_headings: list[str] | None = None,
               theme: dict | None = None) -> None:
@@ -152,20 +168,48 @@ def check_pdf(path: str, rpt: Report, source_text: str | None = None,
 
     # النصوص والصفحات الفارغة
     all_text: list[str] = []
-    blanks: list[int] = []
+    fillers: list[int] = []
     short: list[int] = []
+    body_of: dict[int, str] = {}
     for i in range(n):
         page = doc[i]
         txt = page.get_text("text") or ""
         all_text.append(txt)
-        has_draw = bool(page.get_drawings())
         has_img = bool(page.get_images())
-        if not txt.strip() and not has_draw and not has_img:
-            blanks.append(i + 1)
-        elif len(txt.strip()) < 25 and not has_img:
+        body = frame_text(page, theme)
+        body_of[i + 1] = body
+        if not body.strip() and not has_img:
+            fillers.append(i + 1)          # لا نصّ داخل إطار المتن
+        elif len(body.strip()) < 40 and not has_img:
             short.append(i + 1)
-    if blanks:
-        rpt.warning(f"صفحات فارغة تماماً: {blanks}")
+    if fillers:
+        # الصفحة الفاصلة مقصودة حين تبدأ الفصول على جهة محددة (صفحة الوجه)،
+        # ويجب أن يليها افتتاحية فصل — وإلا فهي صفحة ضائعة فعلاً.
+        lay = (theme or {}).get("layout") or {}
+        parity = lay.get("chapter_starts_on", "any")
+        label = ((theme or {}).get("meta") or {}).get("chapter_label") or "الفصل"
+        heads = [norm(h) for h in (expect_headings or []) if h.strip()]
+        if not heads and source_text:
+            # بلا قائمة عناوين صريحة: نأخذ عناوين H1 من المخطوطة نفسها
+            heads = [norm(m.group(1)) for m in
+                     re.finditer(r"^#\s+(.+)$", source_text, re.M)]
+        def opens_chapter(page_no: int) -> bool:
+            nxt = norm(body_of.get(page_no + 1, "")).strip()
+            if not nxt:
+                return False
+            # ملاحظة: ``norm`` تُزيل الفراغات، فلا يصحّ \b هنا
+            if re.match(rf"({re.escape(label)}|الباب)", nxt):
+                return True
+            return any(nxt.startswith(h) for h in heads)
+
+        starters = [f for f in fillers if opens_chapter(f)]
+        if parity in ("right", "left") and len(starters) == len(fillers):
+            side = "فردية" if parity == "right" else "زوجية"
+            rpt.good(f"صفحات فاصلة مقصودة: {fillers} — بدء كل فصل على صفحة {side} "
+                     f"(chapter_starts_on: {parity})")
+        else:
+            rpt.warning(f"صفحات بلا نصّ في المتن: {fillers} "
+                        f"(يليها افتتاحية فصل: {starters})")
     else:
         rpt.good("لا توجد صفحات فارغة")
     if short:
@@ -222,9 +266,161 @@ def check_pdf(path: str, rpt: Report, source_text: str | None = None,
         rpt.good(f"تم إخراج {n} صورة صفحة في: {render_dir}")
     doc.close()
 
+    check_text_clarity(path, rpt, source_text=source_text, theme=theme)
+
     if theme:
         rpt.section("فحص التخطيط (الهوامش / العناوين اليتيمة)")
         check_layout(path, rpt, theme)
+
+
+
+# ------------------------------------------------- فحص وضوح النصّ العربي (PDF)
+AR_RANGE = r"\u0600-\u06FF\u0750-\u077F"
+CLOSING = "،؛.؟!:"
+
+
+def _clean_for_compare(s: str) -> str:
+    import unicodedata
+    s = unicodedata.normalize("NFKC", s)
+    s = re.sub(r"[\u064B-\u065F\u0670\u0640]", "", s)
+    return s
+
+
+def _ordered_words(s: str) -> list[str]:
+    return [w for w in re.sub(f"[^\\w{AR_RANGE}]+", " ", _clean_for_compare(s)).split()
+            if re.search(f"[{AR_RANGE}]", w)]
+
+
+def pdf_lines_rtl(path: str) -> list[tuple[int, str]]:
+    """أسطر الصفحة بترتيبها المنطقي: داخل السطر من اليمين لليسار، والصفحات بالترتيب.
+
+    هذه الطريقة مستقلة عن تخزين ReportLab للمقاطع؛ تعتمد على إحداثيات الرسم.
+    """
+    import pymupdf
+    doc = pymupdf.open(path)
+    out: list[tuple[int, str]] = []
+    for i, page in enumerate(doc):
+        for b in page.get_text("rawdict")["blocks"]:
+            for line in b.get("lines", []):
+                chars = [(c["bbox"][0], c["c"]) for sp in line["spans"]
+                         for c in sp.get("chars", [])]
+                if not chars:
+                    continue
+                chars.sort(key=lambda t: -t[0])
+                out.append((i + 1, "".join(c for _, c in chars)))
+    doc.close()
+    return out
+
+
+def check_text_clarity(path: str, rpt: Report, source_text: str | None = None,
+                       theme: dict | None = None) -> None:
+    """الفحوص التي تحمي **وضوح القراءة** — وهي أهم من سلامة البناء:
+
+    ١. ترتيب القراءة: يُعاد بناء النصّ من إحداثيات الرسم ويُقارن بالمخطوطة.
+       أي خلل في الاتجاه أو تفكيك الأسطر يُسقِط هذه النسبة فوراً.
+    ٢. بداية السطر: لا يجوز أن يبدأ سطرٌ بفاصلة أو نقطة (دليل على انزلاق
+       الترقيم بين الأسطر).
+    ٣. نمط الأرقام: يطابق المطلوب في design/theme.yaml.
+    ٤. بقايا ترميز الماركداون (** أو `) في المخرج النهائي.
+    """
+    import difflib
+    lines = pdf_lines_rtl(path)
+    if not lines:
+        return
+    rpt.section("وضوح النصّ العربي")
+
+    # (١) ترتيب القراءة
+    if source_text:
+        src_words = _ordered_words(source_text)
+        pdf_words: list[str] = []
+        for _, ln in lines:
+            pdf_words += _ordered_words(ln)
+        sm = difflib.SequenceMatcher(None, src_words, pdf_words, autojunk=False)
+        longest = max((i2 - i1 for tag, i1, i2, _, _ in sm.get_opcodes() if tag == "equal"),
+                      default=0)
+        ratio = sm.ratio()
+        msg = (f"ترتيب القراءة: تشابه {ratio*100:.1f}% (مصدر {len(src_words)} كلمة "
+               f"مقابل {len(pdf_words)}، أطول مقطع متتالٍ {longest} كلمة)")
+        if longest >= 60 and ratio > 0.80:
+            rpt.good(msg)
+        elif longest >= 25 and ratio > 0.65:
+            rpt.warning(msg + " — راجع مواضع الانقطاع")
+        else:
+            rpt.error(msg + " — اشتباه في انعكاس ترتيب الأسطر أو الكلمات")
+
+    # (٢) سطور تبدأ بترقيم ختامي
+    bad_starts = [(pg, ln[:40]) for pg, ln in lines if ln and ln[0] in CLOSING]
+    if bad_starts:
+        rpt.error(f"{len(bad_starts)} سطراً يبدأ بترقيم ختامي (، . ؟) — انزلاق ترقيم؛ "
+                  f"أمثلة: {bad_starts[:5]}")
+    else:
+        rpt.good("لا سطر يبدأ بترقيم ختامي (الترقيم في مواضعه)")
+
+    # (٣) نمط الأرقام
+    joined = "\n".join(ln for _, ln in lines)
+    western = sum(ch.isdigit() and ch.isascii() for ch in joined)
+    indic = len(re.findall(r"[\u0660-\u0669\u06F0-\u06F9]", joined))
+    want = (theme or {}).get("numerals", "western")
+    if want == "western":
+        if indic:
+            rpt.warning(f"أرقام عربية-هندية في المخرج ({indic} رقم) مع أن النمط المعتمد "
+                        f"«western» (123)")
+        else:
+            rpt.good(f"نمط الأرقام لاتيني (123) — {western} رقماً في الكتاب")
+    else:
+        if western > 20:
+            rpt.warning(f"أرقام لاتينية في المخرج ({western}) مع أن النمط المعتمد "
+                        f"«arabic-indic» (١٢٣)")
+        else:
+            rpt.good(f"نمط الأرقام عربي-هندي (١٢٣) — {indic} رقماً")
+
+    # (٤) بقايا ترميز الماركداون
+    leftovers = joined.count("**")
+    if leftovers:
+        rpt.error(f"بقايا ترميز عريض (**) ظاهرة في الصفحات: {leftovers} موضعاً")
+    else:
+        rpt.good("لا بقايا لعلامات الماركداون (**, `) في المخرج")
+
+
+def check_docx_text_clarity(path: str, rpt: Report, source_text: str | None = None,
+                            theme: dict | None = None) -> None:
+    """نظير فحوص الوضوح لملف Word: الأرقام، وسم RTL على المقاطع، وبقايا الترميز."""
+    from docx import Document as _Doc
+    doc = _Doc(path)
+    texts: list[str] = [p.text for p in doc.paragraphs]
+    for t in doc.tables:
+        for row in t.rows:
+            for c in row.cells:
+                texts.append(c.text)
+    joined = "\n".join(texts)
+    rpt.section("وضوح النصّ في DOCX")
+
+    leftovers = joined.count("**")
+    if leftovers:
+        rpt.error(f"بقايا ترميز عريض (**) في ملف Word: {leftovers} موضعاً")
+    else:
+        rpt.good("لا بقايا لعلامات الماركداون في ملف Word")
+
+    want = (theme or {}).get("numerals", "western")
+    indic = len(re.findall(r"[\u0660-\u0669\u06F0-\u06F9]", joined))
+    western = sum(ch.isdigit() and ch.isascii() for ch in joined)
+    if want == "western" and indic:
+        rpt.warning(f"أرقام عربية-هندية في ملف Word ({indic}) مع اعتماد «western»")
+    else:
+        rpt.good(f"نمط الأرقام في Word: {'لاتيني (123)' if want == 'western' else 'عربي-هندي'} "
+                 f"— غربي: {western} | عربي-هندي: {indic}")
+
+    # كل فقرة عربية يجب أن تحمل وسم الاتجاه
+    from docx.oxml.ns import qn as _qn
+    paras = [p for p in doc.paragraphs if re.search(f"[{AR_RANGE}]", p.text or "")]
+    missing_bidi = [p.text[:30] for p in paras
+                    if p._p.find(_qn("w:pPr")) is None
+                    or p._p.pPr.find(_qn("w:bidi")) is None]
+    if missing_bidi:
+        rpt.warning(f"{len(missing_bidi)} فقرة عربية بلا وسم اتجاه (w:bidi): "
+                    f"{missing_bidi[:3]}")
+    else:
+        rpt.good(f"كل الفقرات العربية ({len(paras)}) موسومة بالاتجاه من اليمين إلى اليسار")
 
 
 # --------------------------------------------------------------- فحص DOCX
@@ -320,16 +516,27 @@ def check_docx(path: str, rpt: Report, expect_headings: list[str] | None = None)
     c = Counter(p.style.name for p in paras if p.text.strip())
     rpt.good("الأنماط المستخدمة: " + "، ".join(f"{k} ({v})" for k, v in c.most_common(8)))
 
-    # فقرات فارغة متتالية
+    # فقرات فارغة متتالية — أي عنصر آخر (جدول مثلاً) يقطع التتالي، لأن ما يفصل
+    # الفقرتين ليس فراغاً في الصفحة بل عنصر محتوى.
     runs, worst, cur = 0, 0, 0
-    for p in paras:
-        if not p.text.strip() and not p._p.findall(qn("w:r")):
+    for el in doc.element.body.iterchildren():
+        if el.tag.split("}")[-1] != "p":
+            if cur >= 3:
+                runs += 1
+            cur = 0
+            continue
+        empty = (not "".join(t.text or "" for t in el.iter(qn("w:t"))).strip()
+                 and not el.findall(qn("w:r"))
+                 and not el.findall(".//" + qn("w:r")))
+        if empty:
             cur += 1
             worst = max(worst, cur)
         else:
             if cur >= 3:
                 runs += 1
             cur = 0
+    if cur >= 3:
+        runs += 1
     if worst >= 3:
         rpt.warning(f"توجد {runs} مجموعة من {worst}+ فقرات فارغة متتالية")
     else:
@@ -424,6 +631,7 @@ def main() -> int:
                       expect_headings=heads, theme=theme)
         elif f.lower().endswith(".docx"):
             check_docx(f, rpt, expect_headings=heads)
+            check_docx_text_clarity(f, rpt, source_text=src, theme=theme)
         else:
             rpt.warning(f"نوع غير مدعوم: {f}")
         print(f"  حجم الملف: {os.path.getsize(f)/1024:.0f} KB")

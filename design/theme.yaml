@@ -21,6 +21,14 @@ page:
 
 direction: rtl             # rtl | ltr  (اتجاه الكتاب)
 
+# ---------------------------------------------------------------------------
+# نمط الأرقام في الكتاب كله: أرقام لاتينية (1234567890) أو عربية-هندية (١٢٣).
+# الغالب هنا «western» لأن الأرقام اللاتينية أوضح للقارئ المعاصر، وأدقّ في
+# التواريخ والنِسب وأرقام الصفحات، ولا تختلط فيها الأرقام بالحروف عند التصغير.
+# هذا المفتاح هو **المرجع الوحيد**: يسري على المتن ورقم الصفحة والفهرس
+# والجداول والأشكال. ورقة الاستثناء الوحديدة: front_matter_numbering: roman.
+numerals: western          # western | arabic-indic
+
 fonts:
   body: Amiri              # خط المتن
   body_bold: Amiri-Bold
@@ -40,7 +48,7 @@ fonts:
 
 sizes:
   body_pt: 12.5
-  body_leading_pt: 21      # تباعد الأسطر (≈1.7)
+  body_leading_pt: 21.5    # تباعد الأسطر (≈1.72) — أريَح للعين في الأميري
   h1_pt: 22                # عنوان الفصل
   h2_pt: 16.5
   h3_pt: 13.5
@@ -76,15 +84,16 @@ layout:
   widow_orphan_control: true
   chapter_starts_on: right   # right | left | any
   chapter_head_space_before_pt: 40   # هبوط عنوان الفصل من أعلى الصفحة
-  drop_chapter_number: false
+  drop_chapter_number: true    # عناوين الفصول في المخطوطة تحمل ترقيمها («الفصل الأول: …»)
+                               # فإظهار رقم مولَّد فوقها يُنتج ترقيمين متضاربين في الصفحة
 
 # الترويسة والتذييل
 running:
   odd_header: chapter       # chapter | title | none
   even_header: title
   footer: page_number       # page_number | none
-  page_number_style: arabic-indic   # arabic-indic | western | roman
-  front_matter_numbering: arabic-indic  # arabic-indic | roman | none | western
+  page_number_style: western   # يتبع `numerals` أعلاه (western | arabic-indic | roman)
+  front_matter_numbering: western  # western | arabic-indic | roman | none
   header_rule: true
 
 # الفهرس والمحتويات

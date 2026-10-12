@@ -365,7 +365,7 @@ class DocxBuilder:
             p.alignment = align
         if before is not None or after is not None:
             para_spacing(p, before or 0, after or 0)
-        for kind, seg in _inline(text):
+        for kind, seg in _inline(A.normalize_numerals(text)):
             r = p.add_run()
             style_run(r, font or self.f["body"], size or self.sizes["body_pt"],
                       self.rtl, bold=(kind == "b"), italic=(kind == "i"),
@@ -379,24 +379,28 @@ class DocxBuilder:
         if b.level == 1:
             self.chapter += 1
             self.table_n = self.fig_n = 0
-            p = self.doc.add_paragraph()
-            make_rtl(p, self.rtl)
-            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            p.paragraph_format.space_before = Pt(self.th["layout"]["chapter_head_space_before_pt"])
-            keep_with_next(p)
-            label = f'{self.doc.core_properties.title and ""}'
+            # الافتتاحية: سطر الرقم المولَّد (اختياري) ثم عنوان الفصل
             pre = self.th.get("meta", {}).get("chapter_label", None) or "الفصل"
-            r = p.add_run()
-            style_run(r, self.f["heading"], self.sizes["h1_pt"] * 0.62, self.rtl,
-                      color=self.colors["accent"])
-            r.text = f"{pre} {A.shape('')}".strip()
-            r.text = f"{pre} " + _chapter_word(self.chapter)
+            drop = bool(self.th["layout"].get("drop_chapter_number"))
+            if not drop:
+                p = self.doc.add_paragraph()
+                make_rtl(p, self.rtl)
+                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                p.paragraph_format.space_before = Pt(self.th["layout"]["chapter_head_space_before_pt"])
+                keep_with_next(p)
+                r = p.add_run()
+                style_run(r, self.f["heading"], self.sizes["h1_pt"] * 0.62, self.rtl,
+                          color=self.colors["accent"])
+                r.text = A.normalize_numerals(f"{pre} " + _chapter_word(self.chapter))
             p2 = self.doc.add_paragraph(style="Heading 1")
             make_rtl(p2, self.rtl)
+            if drop:      # بلا سطر رقم: نُبقي هبوط العنوان من أعلى الصفحة
+                p2.paragraph_format.space_before = Pt(
+                    self.th["layout"]["chapter_head_space_before_pt"])
             r = p2.add_run()
             style_run(r, self.f["heading"], self.sizes["h1_pt"], self.rtl,
                       bold=True, color=self.colors["heading"])
-            r.text = b.text
+            r.text = A.normalize_numerals(b.text)
             keep_with_next(p2)
             return
         style = f"Heading {min(b.level, 4)}"
@@ -406,7 +410,7 @@ class DocxBuilder:
         style_run(r, self.f["heading"], self.sizes.get(f"h{min(b.level,4)}_pt",
                                                        self.sizes["body_pt"]),
                   self.rtl, bold=True, color=self.colors["heading"])
-        r.text = b.text
+        r.text = A.normalize_numerals(b.text)
         keep_with_next(p)
 
     def paragraph(self, b: Block):
@@ -427,7 +431,7 @@ class DocxBuilder:
             make_rtl(p, self.rtl)
             p.paragraph_format.space_after = Pt(3)
             if ordered:
-                marker = A.format_number(counter, "arabic-indic") + ".\u00a0"
+                marker = A.format_number(counter, A.numeral_style()) + ".\u00a0"
                 counter += 1
             else:
                 marker = ("•\u00a0" if lvl == 0 else "–\u00a0")
@@ -466,10 +470,12 @@ class DocxBuilder:
             p = cell.paragraphs[0]
             make_rtl(p, self.rtl)
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            r = p.add_run()
-            style_run(r, self.f["heading"], self.sizes["table_pt"], self.rtl, bold=True,
-                      color=self.colors["heading"])
-            r.text = txt
+            for kind, seg in _inline(A.normalize_numerals(txt)):
+                r = p.add_run()
+                style_run(r, self.f["heading"] if kind != "c" else self.f["mono"],
+                          self.sizes["table_pt"] * (0.92 if kind == "c" else 1.0),
+                          self.rtl, bold=True, color=self.colors["heading"])
+                r.text = seg
             set_cell_bg(cell, self.colors["table_header_bg"])
         for i, row in enumerate(rows):
             for j, txt in enumerate(row):
@@ -478,9 +484,12 @@ class DocxBuilder:
                 p = cell.paragraphs[0]
                 make_rtl(p, self.rtl)
                 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                r = p.add_run()
-                style_run(r, self.f["body"], self.sizes["table_pt"], self.rtl)
-                r.text = txt
+                for kind, seg in _inline(A.normalize_numerals(txt)):
+                    r = p.add_run()
+                    style_run(r, self.f["body"] if kind != "c" else self.f["mono"],
+                              self.sizes["table_pt"] * (0.92 if kind == "c" else 1.0),
+                              self.rtl, bold=(kind == "b"), italic=(kind == "i"))
+                    r.text = seg
                 if self.th["objects"]["table_style"] == "zebra" and i % 2 == 1:
                     set_cell_bg(cell, self.colors["table_zebra_bg"])
         self.doc.add_paragraph()
@@ -499,7 +508,7 @@ class DocxBuilder:
                       b.data.get("caption") or b.text or "", "figure")
 
     def _caption(self, prefix: str, text: str, kind: str):
-        num_style = self.th["running"]["page_number_style"]
+        num_style = A.numeral_style()
         if kind == "table":
             self.table_n += 1
             idx = self.table_n
@@ -515,7 +524,7 @@ class DocxBuilder:
         r = p.add_run()
         style_run(r, self.f["body"], self.sizes["caption_pt"], self.rtl,
                   color=self.colors["muted"])
-        r.text = f"{prefix} ({num}) {text}".strip()
+        r.text = f"{prefix} ({num}) {A.normalize_numerals(text)}".strip()
 
     def callout(self, b: Block):
         titles = {"note": "ملاحظة", "tip": "نصيحة", "warning": "تنبيه", "example": "مثال",
@@ -552,7 +561,7 @@ class DocxBuilder:
             p.alignment = WD_ALIGN_PARAGRAPH.LEFT
             r = p.add_run()
             style_run(r, self.f["mono"], self.sizes["body_pt"] * 0.82, False)
-            r.text = line or " "
+            r.text = A.normalize_numerals(line) or " "
             _shade(p, "F2F2F2")
 
     def build(self, blocks):
@@ -595,6 +604,10 @@ def build_docx(blocks, meta: dict, out_path: str, theme_path: str | None = None,
                cover: bool = True, toc: bool = True) -> str:
     from build_pdf import register_fonts
     theme = load_theme(theme_path)
+    A.set_numeral_style(theme.get("numerals", "western"))
+    A.set_base_dir(theme.get("direction", "rtl"))   # اتجاه الفقرة في Bidi (R للعربية)
+    if theme["running"].get("front_matter_numbering") != "roman":
+        theme["running"]["front_matter_numbering"] = A.numeral_style()
     fonts = register_fonts(theme)
     rtl = theme["direction"] == "rtl"
 
@@ -696,7 +709,8 @@ def build_docx(blocks, meta: dict, out_path: str, theme_path: str | None = None,
     fp = sec_front.footer.paragraphs[0] if sec_front.footer.paragraphs else sec_front.footer.add_paragraph()
     make_rtl(fp, rtl)
     fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    add_field(fp, "PAGE", "١", fonts["heading"], s["footer_pt"], rtl)
+    add_field(fp, "PAGE", A.format_number(1, A.numeral_style()), fonts["heading"],
+              s["footer_pt"], rtl)
 
     if meta.get("dedication"):
         p = doc.add_paragraph(style="Quote")
@@ -755,7 +769,8 @@ def build_docx(blocks, meta: dict, out_path: str, theme_path: str | None = None,
         fp = foot.add_paragraph()
         make_rtl(fp, rtl)
         fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        add_field(fp, "PAGE", "١", fonts["heading"], s["footer_pt"], rtl)
+        add_field(fp, "PAGE", A.format_number(1, A.numeral_style()), fonts["heading"],
+              s["footer_pt"], rtl)
 
     DocxBuilder(doc, theme, fonts).build(blocks)
     doc.save(out_path)
