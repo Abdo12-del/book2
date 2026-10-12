@@ -158,8 +158,30 @@ def measure(words: list[Word], size: float, font_of) -> float:
 
 
 # ------------------------------------------------------------------- التقسيم
+# ترقيم ختامي لا يجوز أن يبدأ به سطر (الوقوف عند نهاية سطر لا قبله).
+_FINAL_PUNCT = frozenset("،؛؟.!:…,;")
+
+
+def _glue_final_punct(words: list[Word]) -> list[Word]:
+    """يضمّ الترقيم الختامي المستقلّ إلى الكلمة السابقة، مع حفظ الفراغ بينهما.
+
+    «...» أو «،» قد تصير كلمةً وحدها إن سبقها فراغ في المخطوطة، فيقع الكسر عندها
+    ويهبط الترقيم إلى أول السطر التالي (انزلاق ترقيم). الضمّ يجعل الكسر قبل
+    المجموعة كلها، فيبقى الترقيم ملتصقًا بما قبله.
+    """
+    out: list[Word] = []
+    for w in words:
+        if out and w.text and all(ch in _FINAL_PUNCT for ch in w.text):
+            prev = out[-1]
+            out[-1] = Word(f"{prev.text} {w.text}", prev.kind)
+        else:
+            out.append(w)
+    return out
+
+
 def break_lines(words: list[Word], width: float, size: float, font_of) -> list[list[Word]]:
     """تقسيم جشع إلى أسطر. الكلمة الأطول من السطر تُقسَّم إن كانت لاتينية."""
+    words = _glue_final_punct(words)
     prepare(words, size, font_of)
     space_w = pdfmetrics.stringWidth(_SPACE, font_of(""), size)
     lines: list[list[Word]] = []
