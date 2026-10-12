@@ -1,0 +1,23 @@
+# مخرجات البناء (لا تُرفع إلى Git)
+build/
+output/
+dist/
+out/
+
+# مخلفات بايثون
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# ملفات النظام
+.DS_Store
+Thumbs.db
+*.swp
+
+# نسخ احتياطية ومؤقتة
+*.bak
+*.tmp
+~$*.docx

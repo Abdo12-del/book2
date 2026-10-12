@@ -1,0 +1,96 @@
+# ============================================================
+#  نظام التصميم الموحّد للكتاب  (Design System)
+#  كل القياسات بالمليمتر، وأحجام الخطوط بالنقطة (pt)
+# ============================================================
+
+meta:
+  name: "النمط الافتراضي — كتاب عربي كلاسيكي"
+  version: "1.0"
+
+page:
+  size: A5                 # خيارات: A5 | B5 | A4 | CUSTOM
+  custom_size_mm: [170, 240]
+  orientation: portrait
+  mirrored: true           # هوامش متقابلة (تجليد) أم متماثلة
+  gutter_mm: 8             # هامش التجليد الإضافي (الجهة الداخلية)
+  margin_top_mm: 20
+  margin_bottom_mm: 20
+  margin_outer_mm: 15
+  header_from_top_mm: 10
+  footer_from_bottom_mm: 10
+
+direction: rtl             # rtl | ltr  (اتجاه الكتاب)
+
+fonts:
+  body: Amiri              # خط المتن
+  body_bold: Amiri-Bold
+  body_italic: Amiri-Italic
+  heading: NotoSansArabic-Bold   # خط العناوين (تغطية كاملة للأشكال السياقية)
+  heading_bold: NotoSansArabic-Bold
+  mono: DejaVuSansMono     # للأكواد والنصوص اللاتينية
+  latin: NotoSans          # المصاحب اللاتيني داخل النص العربي
+  # بدائل متاحة ومُختبرة: Amiri / Amiri-Bold / NotoNaskhArabic / NotoNaskhArabic-Bold
+  # ⚠ Tajawal وAlmarai غير صالحين للـPDF هنا: لا تحتوي الأشكال السياقية كاملةً
+
+sizes:
+  body_pt: 12.5
+  body_leading_pt: 21      # تباعد الأسطر (≈1.7)
+  h1_pt: 22                # عنوان الفصل
+  h2_pt: 16.5
+  h3_pt: 13.5
+  h4_pt: 12.5
+  caption_pt: 10.5
+  toc_pt: 12
+  header_pt: 9.5
+  footer_pt: 10
+  table_pt: 11
+
+colors:
+  text: "#1A1A1A"
+  heading: "#16324F"       # كحلي حبري للعناوين
+  accent: "#8C6D3F"        # لون التمييز (ذهبي هادئ)
+  muted: "#6B7280"
+  rule: "#C9CDD3"
+  callout_bg: "#F5F1E8"
+  callout_border: "#8C6D3F"
+  table_header_bg: "#E8E5DC"
+  table_zebra_bg: "#F7F5F0"
+
+# سلوك العناوين والفقرات
+layout:
+  space_before_h1_pt: 0
+  space_after_h1_pt: 14
+  space_before_h2_pt: 16
+  space_after_h2_pt: 8
+  space_before_h3_pt: 12
+  space_after_h3_pt: 6
+  space_after_p_pt: 8
+  first_line_indent_pt: 0
+  keep_headings_with_next: true
+  widow_orphan_control: true
+  chapter_starts_on: right   # right | left | any
+  chapter_head_space_before_pt: 40   # هبوط عنوان الفصل من أعلى الصفحة
+  drop_chapter_number: false
+
+# الترويسة والتذييل
+running:
+  odd_header: chapter       # chapter | title | none
+  even_header: title
+  footer: page_number       # page_number | none
+  page_number_style: arabic-indic   # arabic-indic | western | roman
+  front_matter_numbering: arabic-indic  # arabic-indic | roman | none | western
+  header_rule: true
+
+# الفهرس والمحتويات
+toc:
+  enabled: true
+  depth: 2                  # مستويات العناوين المدرجة
+  dotted_leader: true
+
+# الجداول والأشكال
+objects:
+  caption_prefix_table: "جدول"
+  caption_prefix_figure: "شكل"
+  caption_numbering: "chapter"   # chapter | continuous
+  table_style: grid          # grid | zebra | minimal
+  image_max_width_ratio: 0.92
