@@ -1,0 +1,114 @@
+# ============================================================
+#  نظام التصميم الموحّد للكتاب  (Design System)
+#  كل القياسات بالمليمتر، وأحجام الخطوط بالنقطة (pt)
+# ============================================================
+
+meta:
+  name: "النمط الافتراضي — كتاب عربي كلاسيكي"
+  version: "1.0"
+
+page:
+  size: A5                 # خيارات: A5 | B5 | A4 | CUSTOM
+  custom_size_mm: [170, 240]
+  orientation: portrait
+  mirrored: true           # هوامش متقابلة (تجليد) أم متماثلة
+  gutter_mm: 8             # هامش التجليد الإضافي (الجهة الداخلية)
+  margin_top_mm: 20
+  margin_bottom_mm: 20
+  margin_outer_mm: 15
+  header_from_top_mm: 10
+  footer_from_bottom_mm: 10
+
+direction: rtl             # rtl | ltr  (اتجاه الكتاب)
+
+# ---------------------------------------------------------------------------
+# نمط الأرقام في الكتاب كله: أرقام لاتينية (1234567890) أو عربية-هندية (١٢٣).
+# الغالب هنا «western» لأن الأرقام اللاتينية أوضح للقارئ المعاصر، وأدقّ في
+# التواريخ والنِسب وأرقام الصفحات، ولا تختلط فيها الأرقام بالحروف عند التصغير.
+# هذا المفتاح هو **المرجع الوحيد**: يسري على المتن ورقم الصفحة والفهرس
+# والجداول والأشكال. ورقة الاستثناء الوحديدة: front_matter_numbering: roman.
+numerals: western          # western | arabic-indic
+
+fonts:
+  # ── المنظومة الجديدة: خطّ حديث غير أدبي (Sans) بدل الخطّ النسخي الكلاسيكي ──
+  # خطّ العربية يحتوي كل الأشكال السياقية (611+140) والحركات، لكنه بلا حروف
+  # لاتينية ولا ترقيم لاتيني (— … « » ·)؛ ولذلك يمرّ كل نصّ بمجموعات (tools/
+  # textflow.script_runs): العربية بخطّها، واللاتينية/الأرقام بخطّها المصاحب.
+  # (الاختيار مُتحقَّق آلياً: 0 محارف ناقصة في أي من المخرجين.)
+  body: NotoSansArabic              # متن الكتاب
+  body_bold: NotoSansArabic-Bold
+  body_italic: NotoSansArabic-Light # «مائل» العربية = وزن أخف (العربية لا تُمال)،
+                                    # يُستخدم لأمثلة النطق: *رسمتُ* بدل *رسمت*
+  heading: NotoSansArabic-Bold      # العناوين
+  heading_bold: NotoSansArabic-Bold
+  mono: DejaVuSansMono              # الأكواد
+  latin: NotoSans                   # المصاحب اللاتيني: الأسماء والأرقام والترقيم
+  latin_bold: NotoSans-Bold
+  latin_italic: NotoSans-Italic     # عناوين أجنبية داخل المتن: *Learning and Instruction*
+  # بدائل متاحة: NotoSansArabic-Medium / NotoNaskhArabic (نسخي) / Amiri (نسخي أدبي)
+  # ⚠ Amiri وNotoNaskhArabic «أدبيان» في الطابع؛ وTajawal/Almarai ناقصا الأشكال السياقية
+
+sizes:
+  body_pt: 11.5
+  body_leading_pt: 19          # تباعد الأسطر (≈1.65) — مريح للعين في الـSans
+  h1_pt: 20
+  h2_pt: 15
+  h3_pt: 12.5
+  h4_pt: 11.5
+  caption_pt: 10
+  toc_pt: 11
+  header_pt: 9
+  footer_pt: 9.5
+  table_pt: 10.5
+
+colors:
+  text: "#1A1A1A"
+  heading: "#16324F"       # كحلي حبري للعناوين
+  accent: "#8C6D3F"        # لون التمييز (ذهبي هادئ)
+  muted: "#6B7280"
+  rule: "#C9CDD3"
+  callout_bg: "#F5F1E8"
+  callout_border: "#8C6D3F"
+  table_header_bg: "#E8E5DC"
+  table_zebra_bg: "#F7F5F0"
+
+# سلوك العناوين والفقرات
+layout:
+  space_before_h1_pt: 0
+  space_after_h1_pt: 14
+  space_before_h2_pt: 16
+  space_after_h2_pt: 8
+  space_before_h3_pt: 12
+  space_after_h3_pt: 6
+  space_after_p_pt: 8
+  first_line_indent_pt: 0
+  keep_headings_with_next: true
+  widow_orphan_control: true
+  chapter_starts_on: any     # right | left | any (بلا صفحات بيضاء فارغة بين الفصول)
+  part_separator_page: true  # صفحة فاصلة مستقلة تحمل عنوان الباب ومدخله عند بداية كل باب
+  chapter_head_space_before_pt: 40   # هبوط عنوان الفصل من أعلى الصفحة
+  drop_chapter_number: true    # عناوين الفصول في المخطوطة تحمل ترقيمها («الفصل الأول: …»)
+                               # فإظهار رقم مولَّد فوقها يُنتج ترقيمين متضاربين في الصفحة
+
+# الترويسة والتذييل
+running:
+  odd_header: chapter       # chapter | title | none
+  even_header: title
+  footer: page_number       # page_number | none
+  page_number_style: western   # يتبع `numerals` أعلاه (western | arabic-indic | roman)
+  front_matter_numbering: western  # western | arabic-indic | roman | none
+  header_rule: true
+
+# الفهرس والمحتويات
+toc:
+  enabled: true
+  depth: 2                  # مستويات العناوين المدرجة
+  dotted_leader: true
+
+# الجداول والأشكال
+objects:
+  caption_prefix_table: "جدول"
+  caption_prefix_figure: "شكل"
+  caption_numbering: "chapter"   # chapter | continuous
+  table_style: grid          # grid | zebra | minimal
+  image_max_width_ratio: 0.92

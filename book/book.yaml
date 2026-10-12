@@ -1,0 +1,49 @@
+# ============================================================
+#  بيانات الكتاب وترتيب محتوياته (Spine)
+#  لا تُغيّر هذا الملف إلا بالاتفاق — هو المرجع الوحيد للترتيب.
+# ============================================================
+
+title: "دورة المتحدث الصغير"
+subtitle: "من التأسيس إلى التأثير"
+author: "أكاديمية NG"
+publisher: "NG Academy"
+year: 2026
+series: "دليل مدرّب NG Academy"
+edition: "الطبعة الأولى"
+description: "دليل المدرّب لتعليم مهارات التحدث للأطفال في ثلاثة مستويات متكاملة"
+
+# الكلمة المستخدمة في افتتاحية كل فصل: الفصل / الوحدة / الباب
+chapter_label: "الفصل"
+
+# التمهيد (اختياري)
+dedication: ""
+epigraph: ""
+
+# لوحة الغلاف (اختياري): صورة توليدية بلا نص، تُدرج في غلاف الـPDF
+cover_image: "images/cover-art.png"
+
+# ملفات المحتوى بالترتيب (مسارات نسبية من مجلد book/)
+spine:
+  - 00-fihris.md
+  - 01-muqaddima.md
+  - part1/00-bab.md
+  - part1/01-thiqa.md
+  - part1/02-tabeer.md
+  - part1/03-raseed.md
+  - part1/04-tanzeem.md
+  - part1/05-qiraa.md
+  - part1/06-sawt.md
+  - part1/07-jasad.md
+  - part1/08-ibdaa.md
+  - part2/00-bab.md
+  - part2/09-tafsiri.md
+  - part2/10-wasf.md
+  - part2/11-sard.md
+  - part2/12-hiwar.md
+  - part2/13-iqnaa.md
+  - part2/14-ma3lmati.md
+  - part2/15-istijabi.md
+  - part2/16-irtijali.md
+  - part3/00-bab.md
+  - part3/17-tawzeef.md
+  - part3/18-taqweem.md

@@ -1,0 +1,554 @@
+sources:
+- origin: agent
+  part: 2
+  type: تقرير مؤسسي
+  title: 'Improving oracy and classroom talk in English schools: achievements and challenges'
+  title_ar: تحسين الشفهية والحديث الصفّي في المدارس الإنجليزية
+  author: Robin J. Alexander
+  publisher: وزارة التعليم البريطانية (ورقة ندوة، منشورة على موقع أليكساندر)
+  year: '2020'
+  language: الإنجليزية
+  url: https://robinalexander.org.uk/wp-content/uploads/2020/10/DfE-oracy-120220-Alexander-FINAL.pdf
+  access: full
+  access_note: الورقة متاحة علنًا (PDF). قرأتُ مقتطفات مطوّلة ومسندة عبر البحث، ولم أقرأها صفحةً بصفحة.
+  reliability: علمي محكّم
+  summary: ورقة مرجعية تُلخّص تراكم أكثر من عشرين دراسة كبرى في الحديث الصفّي، وتُصنّف أنواع «حديث التعلّم»
+    و«حديث التعليم»، وتؤسّس لمبدأ أن الحديث ليس وعاءً للتعلم بل آلية منه.
+  key_ideas:
+  - الحديث عالي الجودة يرفع التحصيل في المواد الأساسية بحسب أكثر من 20 دراسة دولية كبرى.
+  - 'يُعدّ أليكساندر عشرة أنواع من حديث التعلّم: السرد، والشرح، والاستدلال، والتخيّل، والتساؤل، والاستكشاف،
+    والتقويم، والمناقشة، والمجادلة، والتبرير.'
+  - 'خمسة أنواع لحديث التعليم: التلقين (rote) والتسميع (recitation) والتعليم (instruction) والمناقشة (discussion)
+    والحوار (dialogue).'
+  - الأسئلة منخفضة المستوى (التي تُطلب جوابًا واحدًا محدّدًا) تُقيّد مشاركة الأطفال وتُفقر الحوار.
+  - 'مبادئ الحوار التعليمي: جماعي، تبادلي، داعم، تراكمي (chain of enquiry)، وهادف.'
+  mapping:
+  - chapter: 9
+    items:
+    - 1
+    - 4
+    - 6
+  - chapter: 11
+    items:
+    - 1
+  - chapter: 12
+    items:
+    - 1
+    - 3
+    - 6
+  - chapter: 13
+    items:
+    - 2
+    - 3
+  - chapter: 15
+    items:
+    - 5
+    - 7
+  - chapter: 16
+    items:
+    - 1
+- origin: agent
+  part: 2
+  type: بحث محكّم
+  title: Eliciting Self-Explanations Improves Understanding
+  title_ar: استدعاء الشرح الذاتي يُحسّن الفهم
+  author: Michelene T. H. Chi, Nicholas de Leeuw, Mei-Hung Chiu, Christian LaVancher
+  publisher: 'Cognitive Science، 18(3)، 439–477 (Wiley) — DOI: 10.1207/s15516709cog1803_3'
+  year: '1994'
+  language: الإنجليزية
+  url: https://onlinelibrary.wiley.com/doi/10.1207/s15516709cog1803_3
+  access: partial
+  access_note: قرأتُ الملخّص الكامل وملخّصات تفصيلية موثّقة للدراسة؛ النصّ الكامل خلف اشتراك.
+  reliability: علمي محكّم
+  summary: 'تجربة ضابطة على طلاب الصف الثامن: مَن طُلب منه أن يشرح لنفسه بعد كل سطر فهم أكثر ممّن أعاد
+    القراءة مرتين، وارتبط الفهم بكمية الشروح المُنتَجة.'
+  key_ideas:
+  - الشرح الذاتي (self-explanation) يُحسّن الفهم حتى دون تدريب مسبق على مهارة الشرح.
+  - مَن أنتج شروحًا أكثر (high explainers) بلغ الفهم الأعمق ووصل إلى النموذج الذهني الصحيح.
+  - 'آلية الفائدة ثلاثية: بنائية (يستنتج ما لم يُقَل)، ودمجية (يصل الجديد بالمعرفة السابقة)، وتصحيحية
+    (يكتشف الخطأ ويصحّحه).'
+  - 'الشرح لا يخدم المستمع فقط: قائله يفهم أكثر — وهذا سند نظري لجعل الشرح نشاطًا صفّيًا لا عرضًا للمعلم.'
+  mapping:
+  - chapter: 9
+    items:
+    - 3
+    - 4
+    - 7
+  - chapter: 15
+    items:
+    - 3
+    - 4
+- origin: agent
+  part: 2
+  type: بحث محكّم
+  title: 'Classroom-based Oral Storytelling: Reading, Writing, and Social Benefits'
+  title_ar: 'السرد الشفهي في الصف: فوائد في القراءة والكتابة والنمو الاجتماعي'
+  author: Trina D. Spencer وزماؤها
+  publisher: 'The Reading Teacher (Wiley) — DOI: 10.1002/trtr.2144'
+  year: '2023'
+  language: الإنجليزية
+  url: https://ila.onlinelibrary.wiley.com/doi/10.1002/trtr.2144
+  access: partial
+  access_note: قرأتُ الملخّص الكامل والبنية العامة للمقال ومصادره المفتاحية؛ النصّ الكامل خلف اشتراك.
+  reliability: علمي محكّم
+  summary: مراجعة تُجمع أدلة تجريبية على أن السرد الشفهي نشاط صفّي متعدد الفوائد، وتعرض سبع إستراتيجيات
+    لدمجه، وتُبيّن أنه مفيد لكل الأطفال وأساسي لبعضهم.
+  key_ideas:
+  - فهم المسموع يتنبّأ بفهم المقروء، والتعبير الشفهي يُغذّي الكتابة.
+  - السرد الشفهي قابل للتدريب بلا نصّ مكتوب، فهو متاح للأطفال الذين لم يتقنوا فك الرموز بعد.
+  - المهارات اللغوية الشفهية المبكرة من أقوى المنبئات بالمهارات الاجتماعية اللاحقة، وصعوبة التعبير ترتبط
+    بمشكلات سلوكية.
+  - المقال يعرض سبع إستراتيجيات لدمج السرد الشفهي في الصف بدل اعتباره نشاطًا هامشيًا.
+  mapping:
+  - chapter: 11
+    items:
+    - 2
+    - 4
+    - 6
+  - chapter: 16
+    items:
+    - 2
+- origin: agent
+  part: 2
+  type: بحث محكّم
+  title: Using Narrative Intervention to Accelerate Canonical Story Grammar and Complex Language Growth
+    in Culturally Diverse Preschoolers
+  title_ar: استخدام التدخّل السردي لتسريع نُظم القصة النموذجية ونموّ اللغة المركّبة
+  author: Douglas B. Petersen, Trina D. Spencer
+  publisher: Topics in Language Disorders، 36(1)، 6–19
+  year: '2016'
+  language: الإنجليزية
+  url: https://www.researchgate.net/publication/292336434
+  access: partial
+  access_note: قرأتُ الملخّص والوصف التفصيلي المنقول عن الدراسة في مصادر ثانوية؛ النصّ الكامل لم يُفتح.
+  reliability: علمي محكّم
+  summary: مراجعة لتقليد بحثي يُدرّب الأطفال على عناصر القصة (story grammar) وإعادة السرد بأدوات بصرية،
+    ويقيس أثره في اللغة المركّبة.
+  key_ideas:
+  - 'عناصر القصة المدروسة: الشخصية، والمشكلة، والاستجابة الداخلية، والحدث/الفعل، والنتيجة.'
+  - التدريب المباشر على عناصر القصة مع التدريب على إعادة السرد فعّال في رفع جودة السرد لدى أطفال من خلفيات
+    لغوية مختلفة.
+  - الإسناد اللفظي مع إسناد غير لفظي (تمثيل القصة أو استخدام مجسّمات) يزيد تحسّن التعبير السردي.
+  - مهارة السرد تنتقل إلى الفهم القرائي والكتابة، فليست غاية في نفسها.
+  mapping:
+  - chapter: 11
+    items:
+    - 2
+    - 3
+    - 4
+    - 5
+  - chapter: 10
+    items:
+    - 5
+- origin: agent
+  part: 2
+  type: تقرير مؤسسي
+  title: 'Writing Next: Effective Strategies to Improve Writing of Adolescents in Middle and High Schools'
+  title_ar: 'الكتابة التالية: إستراتيجيات فعّالة لتحسين الكتابة'
+  author: Steve Graham, Dolores Perin
+  publisher: Carnegie Corporation of New York (ومعه تحليل بعدي في Journal of Educational Psychology 99،
+    445–476)
+  year: '2007'
+  language: الإنجليزية
+  url: https://lincs.ed.gov/federal-initiatives/teal/publications/writing-next
+  access: full
+  access_note: قرأتُ الملخّص التنفيذي وملخّص البنود الأحد عشر وقيم أحجام الأثر من الملخّص المنشور (PDF
+    مفتوح).
+  reliability: علمي محكّم
+  summary: تحليل بعدي لـ142 دراسة (176 حجم أثر) يستخرج أحد عشر عنصرًا تعليميًا ذات أثر ذي دلالة في جودة
+    الكتابة — وأكثرها ينطبق على التعبير الشفهي المنظّم أيضًا.
+  key_ideas:
+  - 'تدريس الإستراتيجيات (تخطيط/مراجعة/تحرير) أكبر أثر: 0.82 (وللطلاب المتأخرين 1.02).'
+  - 'دمج الجمل (sentence combining) أثره 0.50: تدريب الطفل على ضمّ جملتين بسيطتين في جملة أغنى.'
+  - تلخيص النصوص عنصر ذو أثر مؤكّد، وهو أساس «التقارير الشفهية» و«نقل المعلومة».
+  - 'أدوار أخرى مؤكّدة: تحديد أهداف منتج واضحة، ودراسة نماذج جيدة، والكتابة كأداة تعلّم في المواد كلها.'
+  mapping:
+  - chapter: 10
+    items:
+    - 2
+    - 4
+    - 7
+  - chapter: 11
+    items:
+    - 5
+    - 6
+  - chapter: 13
+    items:
+    - 3
+  - chapter: 14
+    items:
+    - 6
+- origin: agent
+  part: 2
+  type: تقرير مؤسسي
+  title: 'Teaching Children to Read: An Evidence-Based Assessment of the Scientific Research Literature
+    on Reading and Its Implications for Reading Instruction — Chapter 4: Comprehension'
+  title_ar: 'تعليم الأطفال القراءة — فصل الفهم: مراجعة الفريق الوطني لقراءة'
+  author: National Reading Panel (NICHD)
+  publisher: المعهد الوطني لصحة الطفل والتنمية البشرية (الولايات المتحدة)
+  year: '2000'
+  language: الإنجليزية
+  url: https://www.nichd.nih.gov/sites/default/files/publications/pubs/nrp/Documents/ch4-II.pdf
+  access: full
+  access_note: قرأتُ خلاصات الفصل واستنتاجاته عبر الملف المفتوح (PDF).
+  reliability: علمي محكّم
+  summary: مراجعة منهجية من هيئة خبراء صنّفت ستة عشر نوعًا من تعليم الفهم، وسبعة منها لها أساس علمي راسخ.
+  key_ideas:
+  - 'السبعة ذات الأساس الراسخ: مراقبة الفهم، والتعلّم التعاوني، والمنظّمات البيانية/الدلالية (وبينها خرائط
+    القصة)، والإجابة عن الأسئلة، وتوليد الأسئلة، والتلخيص.'
+  - توليد الأسئلة من الطفل نفسه ينفع الذاكرة والفهم، وهو امتداد مباشر لمهارات «الاستجواب».
+  - خرائط القصة والمنظّمات البصرية تفيد فهم النص السردي وتُنقل إلى تنظيم الحديث.
+  - 'استمرار فائدة إستراتيجيات الفهم عبر الصفوف 3–6 مؤكّد. '
+  mapping:
+  - chapter: 9
+    items:
+    - 3
+    - 5
+  - chapter: 10
+    items:
+    - 1
+    - 5
+  - chapter: 14
+    items:
+    - 2
+    - 3
+    - 4
+    - 6
+  - chapter: 15
+    items:
+    - 1
+    - 3
+    - 4
+- origin: agent
+  part: 2
+  type: بحث محكّم
+  title: 'Thinking Together in the UK and Mexico: Transfer of an educational innovation'
+  title_ar: 'التفكير معًا في بريطانيا والمكسيك: نقل تجربة تربوية'
+  author: Rupert Wegerif, Sylvia Rojas-Drummond, Neil Mercer
+  publisher: ERIC EJ768692 (ملف PDF مفتوح؛ المجلة والسنة لم أتحقق منهما)
+  year: —
+  language: الإنجليزية
+  url: https://files.eric.ed.gov/fulltext/EJ768692.pdf
+  access: partial
+  access_note: قرأتُ قواعد الحديث الأساسية ونتائج المقارنة عبر الملف المفتوح؛ بيانات المجلة/السنة **لم
+    أتمكّن من التحقق منها**.
+  reliability: علمي محكّم
+  summary: عرض لبرنامج «التفكير معًا» الذي يدرّب الأطفال على قواعد الحوار الاستكشافي، وقياس أثره في مهارات
+    الاستدلال.
+  key_ideas:
+  - 'قواعد الحوار الاستكشافي: مشاركة المعلومات، وتشجيع مشاركة الجميع، والإنصات، والنظر في كل اقتراح، وطلب
+    الأسباب، وتقبّل التحدّي البنّاء، والسعي للاتفاق.'
+  - أضاف البرنامج قواعد حديث صفّية يُتفق عليها مع الأطفال لا تُفرض عليهم.
+  - الأثر ظهر في اختبارات الاستدلال بفروق تُقارب ما بين صفّين دراسيين عند ضبط النمو الطبيعي.
+  - 'من قواعد البرنامج سؤال موجه للهادئ لرفع المشاركة: «ما رأيك أنت؟» وقد يُنشئ قادة أقرانًا.'
+  mapping:
+  - chapter: 12
+    items:
+    - 3
+    - 5
+    - 6
+    - 7
+  - chapter: 13
+    items:
+    - 4
+    - 6
+  - chapter: 16
+    items:
+    - 5
+    - 6
+- origin: agent
+  part: 2
+  type: بحث محكّم
+  title: 'Ground rules for talk: principles for implementing conversation rules in early years mathematics'
+  title_ar: 'قواعد الحديث: مبادئ تطبيق قواعد المحادثة في سنوات الطفولة المبكرة'
+  author: باحثون (مجلة Education 3-13)
+  publisher: 'Taylor & Francis — DOI: 10.1080/03004279.2024.2401563'
+  year: '2024'
+  language: الإنجليزية
+  url: https://www.tandfonline.com/doi/pdf/10.1080/03004279.2024.2401563
+  access: partial
+  access_note: قرأتُ مقتطفات مطوّلة من المقدمة والنتائج عبر الصفحة؛ بقية المقال لم تُفتح.
+  reliability: علمي محكّم
+  summary: دراسة كيفية تطبيق قواعد الحديث مع صغار السن، وأثرها في بناء الاستدلال الجماعي.
+  key_ideas:
+  - قواعد الحديث تفيد الأطفال الصغار أيضًا، لا الكبار فقط.
+  - الأطفال يتعلّمون نوع السؤال الذي يستدعي تفكيرًا عند الآخرين، لا مجرد أدب الحوار.
+  - التدريب على القواعد يرفع جودة التفاعل إذا عُلمت قواعد مع «كيف» و«لماذا» تُستعمل، لا كقائمة أوامر.
+  mapping:
+  - chapter: 12
+    items:
+    - 6
+  - chapter: 13
+    items:
+    - 6
+- origin: agent
+  part: 2
+  type: بحث محكّم
+  title: 'Wait Time: Slowing Down May Be A Way of Speeding Up!'
+  title_ar: 'زمن الانتظار: التمهُّل قد يكون طريقًا للإسراع'
+  author: Mary Budd Rowe
+  publisher: Journal of Teacher Education، 37(1)، 43–50
+  year: '1986'
+  language: الإنجليزية
+  url: https://journals.sagepub.com/doi/10.1177/002248718603700110
+  access: metadata-only
+  access_note: لم أفتح المقال؛ اعتمدتُ على ملخّصات ثانوية موثّقة (Rowe 1974/1986) منشورة في مواقع تعليمية.
+    **يحتاج تحققًا قبل أي استشهاد محدد**.
+  reliability: علمي محكّم
+  summary: 'المراجعة الكلاسيكية التي رسّخت مفهوم «زمن الانتظار»: تمهُّل المعلم بعد السؤال وبعد الجواب
+    يغيّر جودة كلام الأطفال ونوعه.'
+  key_ideas:
+  - 'زمن الانتظار الأول: بين نهاية السؤال وبداية الجواب. والثاني: بين نهاية جواب الطفل وبداية كلام المعلم.'
+  - المعدّل الشائع في الصفوف أقصر من ثانية واحدة إلى ثانيتين.
+  - بلوغ ثلاث ثوانٍ أو أكثر يزيد طول الجواب ودقّته ويجلب تفكيرًا أعلى رتبة ومشاركة أوسع.
+  - 'قلة الانتظار تُنزل مستوى الخطاب الصفّي كله (تسمعه Rowe: أشبه بالاستجواب منه إلى محادثة).'
+  mapping:
+  - chapter: 15
+    items:
+    - 2
+    - 5
+    - 7
+  - chapter: 12
+    items:
+    - 2
+- origin: agent
+  part: 2
+  type: بحث محكّم
+  title: 'How contingent questioning promotes extended student talk: a function of display questions'
+  title_ar: كيف يدفع السؤال المتفرّع (المبني على جواب الطفل) الحديث الطويل عند الطلاب
+  author: Maureen Boyd, Debra Rubin
+  publisher: Journal of Literacy Research، 28(2)، 141–169 (كما ورد في استشهاد مكتب تعليم جامعي؛ لم أتحقق
+    من الأرقام)
+  year: '2006'
+  language: الإنجليزية
+  url: https://www.kent.edu/ctl/oral-communication-learning-tool
+  access: metadata-only
+  access_note: لم أفتح المقال؛ ثبت ذكره في صفحة جامعية موثّقة مع تفاصيل الاستشهاد. **بيانات المجلة والسنة
+    تحتاج تحققًا**.
+  reliability: علمي محكّم
+  summary: 'دراسة في نوعية الأسئلة: السؤال المبني على ما قاله الطفل يمدّ الحديث، بخلاف سؤال «الاستظهار»
+    الذي يطلب جوابًا متوقعًا مسبقًا.'
+  key_ideas:
+  - الأسئلة «المتفرّعة» (contingent) تفتح حديثًا ممتدًا، وسؤال الاستظهار يغلقه.
+  - معظم أسئلة الصفوف أسئلة استظهار منخفضة المستوى.
+  - إعادة صياغة سؤال الطفل أو طلب التفصيل عنه تعليم صريح لمهارة الاستجابة.
+  mapping:
+  - chapter: 15
+    items:
+    - 5
+    - 7
+  - chapter: 12
+    items:
+    - 3
+    - 4
+- origin: agent
+  part: 2
+  type: بحث محكّم
+  title: 'Deliberative Discourse Idealized and Realized: Accountable Talk in the Classroom and in Civic
+    Life'
+  title_ar: 'الخطاب التداولي: حديث المساءلة في الصف والحياة المدنية'
+  author: Sarah Michaels, Catherine O'Connor, Lauren B. Resnick
+  publisher: 'Studies in Philosophy and Education، 27(4)، 283–297 — DOI: 10.1007/s11217-007-9071-1'
+  year: '2008'
+  language: الإنجليزية
+  url: https://link.springer.com/article/10.1007/s11217-007-9071-1
+  access: partial
+  access_note: قرأتُ الملخّص والتعريفات المنقولة في مصادر ثانوية محكّمة (الأبعاد الثلاثة وحركات الحديث)؛
+    النصّ الكامل لم يُفتح.
+  reliability: علمي محكّم
+  summary: 'الإطار المرجعي لـ«حديث المساءلة»: ثلاثة التزامات تحدد جودة الحوار الصفّي، مع حركات حديث عملية
+    يمارسها المعلم والأطفال.'
+  key_ideas:
+  - 'المساءلة ثلاثة: المساءلة لمجتمع المتعلّمين، وللمعرفة الدقيقة المناسبة، ولمعايير التفكير الصارمة.'
+  - 'حركات الحديث العملية: إعادة الصياغة (revoicing)، وطلب توسيع الفكرة، وطلب تطبيق تفكير الطفل على فكرة
+    غيره، والسؤال: «مَن يستطيع أن يضيف؟».'
+  - الهدف ليس أن يُجيب الطفل إجابة صحيحة، بل أن يُسنِد ويسائل ويتحمّل مسؤولية ما يقول.
+  - حديث المساءلة يبني عادات مدنية لا مجرد مهارات صفّية.
+  mapping:
+  - chapter: 13
+    items:
+    - 1
+    - 3
+    - 4
+    - 6
+  - chapter: 15
+    items:
+    - 4
+    - 7
+- origin: agent
+  part: 2
+  type: بحث محكّم
+  title: Whose classroom is it, anyway? Improvisation as a teaching tool
+  title_ar: لمن هذا الصف؟ الارتجال أداة تعليمية
+  author: Ronald A. Berk, Rosalind H. Trieber
+  publisher: Journal on Excellence in College Teaching، 20(3)، 29–60 (نسخة مفتوحة على موقع بيرك)
+  year: '2009'
+  language: الإنجليزية
+  url: https://www.ronberk.com/articles/2009_improv.pdf
+  access: full
+  access_note: قرأتُ مقتطفات واسعة من المقال المفتوح (المبادئ، والفعاليات، ونتائج التقييم). **تحذير:**
+    سياق المقال تعليم جامعي، والتكييف للأطفال يحتاج حذرًا.
+  reliability: علمي محكّم
+  summary: 'يعرض الارتجال كأداة صفّية، ويجمع أدلة على فوائده: التلقائية، والإنصات، والتواصل غير اللفظي،
+    والمخاطرة الآمنة، والعمل الجماعي.'
+  key_ideas:
+  - 'من مبادئ الارتجال: «نعم، و…» (قبول معرض الآخر والبناء عليه)، والإنصات التام، وعدم الحكم المسبق على
+    الفكرة.'
+  - 'من مخرجاته المعلنة: تحسين مهارات العرض، والتفكير السريع («التفكير على قدميك»)، والاستجابة للتحدّيات
+    غير المتوقعة.'
+  - الأجواء غير العقابية (الضحك المشترك، والخطأ غير المُعاقب) ترفع استعداد الطالب للمخاطرة بالكلام.
+  - باحثون آخرون (Sawyer) يربطون فاعلية المعلم بالتخطيط المرن لا بالارتجال العشوائي.
+  mapping:
+  - chapter: 16
+    items:
+    - 2
+    - 3
+    - 4
+    - 6
+    - 7
+- origin: agent
+  part: 2
+  type: كتاب
+  title: Structure and Improvisation in Creative Teaching
+  title_ar: البنية والارتجال في التعليم المبدع
+  author: R. Keith Sawyer (محرّر)
+  publisher: Cambridge University Press
+  year: '2011'
+  language: الإنجليزية
+  url: https://doi.org/10.1017/CBO9780511997105
+  access: metadata-only
+  access_note: لم أفتح الكتاب؛ استندتُ إلى الملخّص ومقتبسات موثّقة ومراجعة منشورة. **الأفكار تحتاج تحققًا
+    صفحةً بصفحة قبل الاستشهاد**.
+  reliability: مهني موثوق
+  summary: 'يؤصّل مفهوم «الارتجال المنضبط»: المعلم الفاعل يستعمل بنية أكثر وارتجالًا أكثر معًا، لا أحدهما
+    بدل الآخر.'
+  key_ideas:
+  - '«الارتجال المنضبط»: الارتجال يعمل داخل بنية وأهداف واضحة.'
+  - '«المعلمون ذوو الخبرة يفعلون شيئين متناقضين ظاهريًا: يستعملون بنية أكثر، ويرتجلون أكثر».'
+  - قاعدة «نعم، و…» ومبدأ «بنية دنيا، استقلالية عليا» كمظاهر للبيئة الآمنة للعب بالأفكار.
+  - 'الارتجال ليس فوضى: هو استجابة مرنة داخل خطّة، وهي المهارة التي يحتاجها الطفل حين يُفاجأ بسؤال.'
+  mapping:
+  - chapter: 16
+    items:
+    - 1
+    - 3
+    - 4
+    - 7
+  isbn: '9780521762519'
+  edition: 'الطبعة الأولى (ISBN-13 للمطبوعة الشعبية: 9780-5217-4632-8)'
+- origin: agent
+  part: 2
+  type: دليل تدريبي
+  title: 'Checkology (مشروع محو الأمية الإخبارية) — دروس وخطط: Arguments & Evidence / Is it checkable?
+    / Two Facts and a Feeling'
+  title_ar: 'شيكولوجي: درس «الحجج والأدلة» وخطط «هل يمكن التحقق منه؟» و«حقيقتان وشعور»'
+  author: News Literacy Project (منظمة غير ربحية)
+  publisher: News Literacy Project
+  year: '2026'
+  language: الإنجليزية
+  url: https://newslit.org/unplugged/
+  access: full
+  access_note: قرأتُ صفحات المشروع ودروس خططه المعلنة (وصف الدروس والقوالب). موادّ الأطفال الفعلية (PDF/فيديو)
+    لم أفتحها.
+  reliability: خبرة عملية
+  summary: منظومة دروس مجانية تُعلّم الأطفال فرز الصحيح من المفبرك، والتمييز بين الخبر والرأي، ووزن الأدلة
+    — ومصدر عملي جاهز لتكييف تدريبات «نقل الخبر».
+  key_ideas:
+  - التمييز بين الحقيقة والرأي يُعلَّم بأنشطة صفّية عملية لا بالتلقين (مثال «حقيقتان وشعور»).
+  - درس «الحجج والأدلة» يعرض المغالطات المنطقية ببساطة مناسبة للأطفال.
+  - 'خطوات فحص مصدر الخبر: المصدر، والكاتب، والمراجع، والتواريخ، وتصديق وكالات موثوقة للحدث.'
+  - المشروع يقدّم نسخًا مطبوعة «بلا إنترنت» قابلة للتكييف مع دليل المدرّب.
+  mapping:
+  - chapter: 14
+    items:
+    - 1
+    - 5
+  - chapter: 13
+    items:
+    - 1
+- origin: agent
+  part: 2
+  type: مقال
+  title: 'The post-fact age: how to teach news literacy'
+  title_ar: 'عصر ما بعد الحقيقة: كيف نُعلّم محو الأمية الإخبارية'
+  author: Kirsten Sutton
+  publisher: Cambridge University Press — مدوّنة تعليم الإنجليزية (ELT blog)
+  year: '2020'
+  language: الإنجليزية
+  url: https://www.cambridge.org/elt/blog/2020/09/29/post-fact-age-how-teach-news-literacy/
+  access: full
+  access_note: قرأتُ المقال كاملًا (صفحة مفتوحة).
+  reliability: خبرة عملية
+  summary: مقال عملي يقدّم خطوات لأنشطة الصف في تمييز الحقيقة من الرأي من الادّعاء المدعوم بالدليل، وفحص
+    مصادر الأخبار.
+  key_ideas:
+  - لا تُدرَّب الأطفال على ثنائية «صحيح/خطأ» فقط، بل على سُلّم درجات بينهما.
+  - 'خطوات عملية: فحص موقع الناشر، والمؤلف، والمراجع والروابط، وتاريخ المعلومة.'
+  - 'التصديق المُتقاطع: خبرٌ نشرته وكالتان موثوقتان مستقلّتان فحسب، لا خبر واحد منتشر.'
+  - 'علّم الطفل أن يسأل: ما الدليل؟ ومن قاله؟ وما غرضه؟ — وهي بعينها أسئلة التقرير الشفهي.'
+  mapping:
+  - chapter: 14
+    items:
+    - 1
+    - 5
+- origin: agent
+  part: 2
+  type: بحث محكّم
+  title: Essential Elements of Fostering and Teaching Reading Comprehension
+  title_ar: العناصر الأساسية في تنمية الفهم القرائي وتعليمه
+  author: Nell K. Duke, P. David Pearson (مع Strachan & Billman)
+  publisher: فصل في كتاب محكّم (What Research Has to Say About Reading Instruction) — نسخة PDF منشورة
+  year: '2011'
+  language: الإنجليزية
+  url: https://www.readinghalloffame.org/sites/default/files/03-duke-pearson-strachan-billman.2011_rev_copy.pdf
+  access: full
+  access_note: قرأتُ مقتطفات مطوّلة من الفصل (قوائم الإستراتيجيات والعناصر) في الملف المفتوح.
+  reliability: علمي محكّم
+  summary: مرجع في تعليم الفهم القرائي يجمع الإستراتيجيات ذات القيمة التدريسية، ومنها التصوّر الذهني ومعالجة
+    بنية النص.
+  key_ideas:
+  - 'من الإستراتيجيات الجديرة بالتعليم: التصوّر الذهني، والتنبؤ، وتفعيل المعرفة السابقة، وطرح الأسئلة
+    الذاتية، والتلخيص وإعادة السرد.'
+  - 'للفهم السردي إستراتيجيات خاصة: الانتباه لعناصر القصة.'
+  - 'وللنص المعلوماتي: البحث والتصفّح وبنية النص.'
+  - 'الشرط أن يتبع التدريس مسار التحرير التدريجي للمسؤولية: وصف صريح، فَنمذجة، فتدريب موجّه، فمستقلّ.'
+  mapping:
+  - chapter: 10
+    items:
+    - 1
+    - 5
+    - 6
+  - chapter: 14
+    items:
+    - 4
+    - 6
+- origin: agent
+  part: 2
+  type: تقرير مؤسسي
+  title: 'Why Oracy Matters: the evidence base for positioning oracy at the heart of education'
+  title_ar: 'لماذا الشفهية تهمّ: قاعدة الأدلة'
+  author: باحثون لصالح English-Speaking Union (مراجعة أعدّها جيمس مانّيون ومعه)
+  publisher: English-Speaking Union
+  year: '2023'
+  language: الإنجليزية
+  url: https://www.esu.org/wp-content/uploads/2023/11/Why-Oracy-Matters_FINAL.pdf
+  access: full
+  access_note: قرأتُ مقتطفات مطوّلة (مهارات المتحدث الفعّال، وأدوار الشفهية) في الملف المفتوح.
+  reliability: مهني موثوق
+  summary: مراجعة تربوية تجمع أدلة نفس-لغوية وتربوية على أثر الشفهية، وتعرض إطار مهارات المتحدث الفعّال
+    (تنظيم، استدلال، إقناع، عرض).
+  key_ideas:
+  - 'المتحدث الفعّال: بنية واضحة يُعلنها للجمهور، واستدلال منطقي واضح، وأدلة تُشرح وتُحلَّل.'
+  - الشفهية تحسّن النمو المعرفي والتحصيل عبر المواد، لا في اللغة فقط.
+  - ضعف المفردات في الخامسة يضاعف خطر التعبير لاحقًا؛ والمحادثة الهادفة توسّع المفردات أكثر من الاستماع.
+  - الشفهية تُعدّ حقًّا تعليميًا لكل طفل، لا نشاطًا كماليًا.
+  mapping:
+  - chapter: 13
+    items:
+    - 2
+    - 3
+    - 4
+    - 7
+  - chapter: 15
+    items:
+    - 3
